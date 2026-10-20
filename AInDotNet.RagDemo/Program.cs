@@ -37,12 +37,24 @@ var builder = Host.CreateApplicationBuilder(args);
 
 builder.Configuration.AddUserSecrets<Program>();
 
-
-builder.Services.AddDbContext<AInDotNetRAGContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    Console.Error.WriteLine("Database connection string is missing. " + "Set ConnectionStrings:DefaultConnection in User Secrets.");
+    Environment.ExitCode = 1;
+    return;
+}
+builder.Services.AddDbContext<AInDotNetRAGContext>(options => options.UseSqlServer(connectionString));
 
 
 // Read configuration
-string apiKey = builder.Configuration["OpenAI:ApiKey"] ?? throw new InvalidOperationException("OpenAI API key is missing.");
+string? apiKey = builder.Configuration["OpenAI:ApiKey"];
+if (string.IsNullOrWhiteSpace(apiKey))
+{
+    Console.Error.WriteLine("OpenAI API key is missing. " + "Set OpenAI:ApiKey in User Secrets.");
+    Environment.ExitCode = 1;
+    return;
+}
 
 string embeddingModel = builder.Configuration["OpenAI:EmbeddingModel"] ?? "text-embedding-3-small";
 

@@ -2,7 +2,7 @@
   "profiles": {
     "AInDotNet.RagDemo": {
       "commandName": "Project",
-      "commandLineArgs": "ingest \"..\\..\\..\\..\\TestInputFiles\\EmptyInput.txt\""
+      "commandLineArgs": "ask \"Where does the AInDotNet demonstration store document embeddings?\""
     }
   }
 }

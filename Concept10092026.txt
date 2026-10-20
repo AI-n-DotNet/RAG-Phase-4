@@ -1,0 +1,346 @@
+Exactly. You want SQL Server to calculate vector similarity, sort the results, and return only the top matches. EF Core can then materialize those few records rather than loading thousands of embeddings into C#.
+With SQL Server 2025's native vector support, you can use VECTOR_DISTANCE() directly in a SQL SELECT statement.
+1. Basic SQL vector similarity search
+Suppose your table looks like this:
+CREATE TABLE dbo.KnowledgeChunks
+(
+    Id          INT IDENTITY PRIMARY KEY,
+    DocumentId  INT NOT NULL,
+    Content     NVARCHAR(MAX) NOT NULL,
+    Embedding   VECTOR(1536) NOT NULL
+);
+
+
+The VECTOR(1536) column holds an embedding with 1,536 dimensions. The dimensions must match those produced by your embedding model.
+To find the five most similar records:
+DECLARE @QueryVector VECTOR(1536) =
+    CAST(@EmbeddingJson AS VECTOR(1536));
+
+SELECT TOP (5)
+    Id,
+    DocumentId,
+    Content,
+    VECTOR_DISTANCE(
+        'cosine',
+        Embedding,
+        @QueryVector
+    ) AS Distance
+FROM dbo.KnowledgeChunks
+ORDER BY Distance ASC;
+
+
+@EmbeddingJson is a parameter containing the query embedding represented as a JSON array of numbers.
+The important part: SQL Server calculates the cosine distance and performs the ordering. Your application receives only five records.
+With cosine distance, lower values indicate greater similarity.
+This is a substantial improvement over retrieving every vector into application memory and calculating similarity in C#.
+However, this particular query uses an exact similarity calculation. Without an appropriate indexed search strategy, SQL Server may still need to evaluate every qualifying row internally.
+That is why there is a second option for larger datasets.
+2. Faster search using a vector index
+For larger datasets, SQL Server supports approximate nearest-neighbor (ANN) retrieval through VECTOR_SEARCH().
+Using the same table:
+-- Requires a supported SQL Server vector index.
+DECLARE @QueryVector VECTOR(1536) =
+    CAST(@EmbeddingJson AS VECTOR(1536));
+
+SELECT TOP (5) WITH APPROXIMATE
+    k.Id,
+    k.DocumentId,
+    k.Content,
+    v.distance AS Distance
+FROM VECTOR_SEARCH(
+    TABLE = dbo.KnowledgeChunks AS k,
+    COLUMN = Embedding,
+    SIMILAR_TO = @QueryVector,
+    METRIC = 'cosine'
+) AS v
+ORDER BY v.distance;
+
+
+This can use a compatible DiskANN vector index to avoid the full exact-distance scan.
+Microsoft's latest syntax uses TOP (N) WITH APPROXIMATE; older examples using TOP_N inside VECTOR_SEARCH() are now deprecated. SQL Server 2025's vector indexing remains a preview feature, while it is generally available in certain Azure SQL environments. 
+
+Microsoft Learn
++1
+
+
+
+
+3. Calling the SQL from Entity Framework
+You can retain EF Core for the application and use parameterized raw SQL for retrieval.
+For example, with a keyless result type:
+public sealed class ChunkMatch
+{
+    public int Id { get; set; }
+    public int DocumentId { get; set; }
+    public string Content { get; set; } = "";
+    public double Distance { get; set; }
+}
+
+
+Assuming ChunkMatch is configured as a keyless entity in your DbContext:
+string embeddingJson =
+    JsonSerializer.Serialize(queryEmbedding);
+
+var matches = await db.Set<ChunkMatch>()
+    .FromSqlInterpolated($"""
+        DECLARE @q VECTOR(1536) =
+            CAST({embeddingJson} AS VECTOR(1536));
+
+        SELECT TOP (5)
+            Id,
+            DocumentId,
+            Content,
+            VECTOR_DISTANCE(
+                'cosine', Embedding, @q
+            ) AS Distance
+        FROM dbo.KnowledgeChunks
+        ORDER BY Distance;
+        """)
+    .AsNoTracking()
+    .ToListAsync();
+
+
+This example uses the exact search from section 1. You can replace the SELECT with the indexed version when the environment supports it.
+The interpolated embedding is passed as a SQL parameter rather than concatenated into SQL text.
+Alternatively, put the retrieval query in a stored procedure and call it through EF Core.
+4. You may not even need raw SQL
+One detail I verified: EF Core 10 now supports both exact and approximate vector search through LINQ for supported SQL Server environments.
+For example, Microsoft's provider supports the VectorSearch() extension and .WithApproximate():
+var matches = await db.KnowledgeChunks
+    .VectorSearch(
+        c => c.Embedding,
+        queryVector,
+        "cosine")
+    .OrderBy(r => r.Distance)
+    .Take(5)
+    .WithApproximate()
+    .ToListAsync();
+
+
+This assumes a compatible vector-mapped entity and index.
+EF Core translates that LINQ expression into SQL Server's native vector search. It does not load all the vectors into memory and sort them in C#. 
+
+Microsoft Learn
+
+
+
+
+That's a useful distinction from our earlier discussion: LINQ itself is not the problem. The problem is forcing client-side similarity calculations instead of allowing the database to perform retrieval.
+Which approach would I use?
+Situation	Approach
+SQL Server 2025, small or moderate vector collection	VECTOR_DISTANCE() with TOP
+SQL Server with supported ANN indexing, large vector collection	VECTOR_SEARCH() with WITH APPROXIMATE
+EF Core 10 with supported vector features	Native LINQ vector search
+Existing EF application using stored procedures	Parameterized stored procedure
+Older SQL Server without native vector functions	Evaluate application-side search for small collections, or another supported retrieval engine
+One useful benchmark reference: Microsoft recommends exact search as a starting point for fewer than roughly 50,000 candidate vectors, although actual performance depends on filtering, vector dimensions, hardware, and concurrency. 
+
+Microsoft Learn
+
+
+
+
+One question: Which version of SQL Server are you currently using—2019, 2022, or 2025?
+That determines whether you can use these native vector functions or need a different SQL-based strategy.
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+I run SQL Server developer.  So I think I can download the latest version - 16.0.1000.6
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+Yes. SQL Server Developer Edition is an excellent environment for testing RAG and native vector search, because it provides the functionality of the corresponding SQL Server Enterprise edition for development and testing.
+But there's an important version-number distinction:
+16.0.1000.6 is SQL Server 2022, not SQL Server 2025.
+SQL Server 2025 is version 17.x. That's the version you want to investigate for native vector storage and similarity search.
+You can install SQL Server 2025 Developer Edition without purchasing a production license, provided you're using it for development and testing rather than production workloads.
+What I'd recommend installing
+Download SQL Server 2025 Enterprise Developer Edition from microsoft.com
+. 
+
+Microsoft
+
+
+
+
+I'd install it as a separate named instance rather than upgrading your existing SQL Server 2022 instance immediately. That lets you experiment with native vector features without disrupting your current applications.
+After installation, run:
+SELECT
+    @@VERSION AS VersionInfo,
+    SERVERPROPERTY('ProductVersion') AS ProductVersion,
+    SERVERPROPERTY('Edition') AS Edition;
+
+
+You should see a version beginning with 17..
+Then try this minimal vector search:
+DECLARE @QueryVector VECTOR(3) = '[0.1, 0.2, 0.3]';
+
+SELECT TOP (3)
+    Id,
+    Content,
+    VECTOR_DISTANCE(
+        'cosine',
+        Embedding,
+        @QueryVector
+    ) AS Distance
+FROM dbo.KnowledgeChunks
+ORDER BY Distance;
+
+
+This assumes a test table with a VECTOR(3) column and some sample records. Your real embeddings will probably have hundreds or thousands of dimensions.
+One especially useful feature for your .NET applications: Microsoft.Data.SqlClient 6.1 and later supports native vector transmission, avoiding some JSON serialization overhead. 
+
+Microsoft Learn
+
+
+
+
+For your initial experiments, I'd start with VECTOR_DISTANCE() and ordinary SQL queries. Once that's working, test DiskANN indexing. The native vector type and distance functions are generally available in SQL Server 2025, while vector indexing remains in preview and requires enabling preview features. 
+
+Microsoft Learn
++1
+
+
+
+
+This would let you test your existing RAG architecture with SQL Server performing similarity calculations internally—without adding another database product.
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+I wonder if this deep dive into using sql server vector and entity framework - deserves another article?
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+Yes. I think this deserves a separate article—and potentially a companion GitHub project.
+In fact, I think it could be one of your more valuable technical articles because it connects three things that are rarely discussed together:
+1. Enterprise architecture decisions.
+2. SQL Server's native vector capabilities.
+3. Practical C# and Entity Framework Core implementation.
+Your previous article explained why an enterprise might not need another vector database.
+This article would demonstrate how to build RAG using the Microsoft stack the enterprise already operates.
+That's a natural progression from architectural reasoning to working implementation.
+Recommended article
+Title: SQL Server 2025 Vector Search with EF Core 10: Build RAG Without Another Database
+Subtitle: Store embeddings, perform similarity searches in SQL Server, and retrieve results using familiar .NET patterns.
+Primary SEO keyword: SQL Server 2025 vector search
+Secondary keywords: EF Core 10 vector search, SQL Server RAG, VECTOR_DISTANCE, VECTOR_SEARCH, Semantic Kernel, DiskANN, C# vector embeddings.
+Target audience: .NET developers, SQL Server DBAs, software architects, and enterprise AI engineers.
+What would make this article valuable?
+I'd structure it as a practical implementation guide.
+Section	What readers learn
+1. Why SQL Server for RAG?	When existing infrastructure is sufficient
+2. SQL Server 2025 capabilities	VECTOR, VECTOR_DISTANCE, VECTOR_SEARCH, DiskANN
+3. Creating the database	Tables, vector columns, and embedding dimensions
+4. Generating embeddings in C#	Using an embedding model through Semantic Kernel
+5. Saving embeddings	EF Core 10 and native vector support
+6. Searching with SQL	Top-K cosine similarity using VECTOR_DISTANCE
+7. Searching with LINQ	Server-side vector search through EF Core
+8. Optimizing with DiskANN	Exact versus approximate nearest-neighbor search
+9. Benchmarking	SQL versus LINQ versus indexed retrieval
+10. Production considerations	Security, indexing, updates, and operational costs
+The centerpiece should be a complete working example, not isolated code snippets.
+The most interesting part: EF Core versus SQL versus vector indexing
+This is where you could contribute something more useful than another introductory RAG tutorial.
+Compare three approaches using the same data and query embeddings:
+Three SQL Server vector retrieval approaches
+Approach A — Exact SQL search
+EF Core raw SQL or stored procedure → VECTOR_DISTANCE() → TOP (K)
+Database calculates similarity; exact results
+
+Approach B — EF Core LINQ
+LINQ vector expression → SQL translation → server-side execution
+Familiar .NET programming model; compare generated SQL and overhead
+
+Approach C — Indexed approximate search
+SQL Server DiskANN index → VECTOR_SEARCH() → Top-K results
+Potentially faster retrieval at scale; measure recall against exact search
+
+
+For a credible comparison, measure p50/p95 query latency, throughput, recall@10, indexing time, and SQL Server resource utilization. Run the same queries with the same dataset, embeddings, and filters.
+I would test at approximately 1,000, 10,000, 100,000, and 1 million vectors, as available. Those sizes could show where exact search becomes impractical and whether indexing provides sufficient benefit.
+One important detail: A SQL query using VECTOR_DISTANCE() is still potentially scanning all qualifying vectors inside SQL Server. It avoids transferring vectors to C#, but it does not automatically avoid the computational cost of exact similarity search.
+That's precisely why a real benchmark would be useful.
+This could become a small AInDotNet technical series
+
+Article 1 — Architecture
+Your Operational Database May Already Be Your Vector Database
+Why not every RAG application needs another database.
+
+
+
+
+Article 2 — Implementation
+SQL Server 2025 Vector Search with EF Core 10
+How to build a working .NET RAG application using SQL Server.
+
+
+
+
+Article 3 — Performance
+SQL Server Vector Search Benchmarks: Exact SQL vs. LINQ vs. DiskANN
+Measured results rather than vendor performance claims.
+
+
+
+I would publish the implementation article first and make the benchmark article dependent on actual test results.
+One caution before publishing
+We should verify the exact SQL Server 2025 and EF Core 10 APIs against the installed versions and execute the examples. Vector indexing has had preview-specific syntax and feature restrictions, so I would not publish an untested tutorial as production-ready guidance.
+This also makes a small GitHub repository particularly valuable: readers could clone it, run the sample, and reproduce the queries.
+My recommendation: Yes, publish the article. It reinforces AInDotNet's Microsoft/.NET positioning while providing something concrete that enterprise developers can implement immediately. The previous article establishes the architectural principle; this one proves the implementation is practical.

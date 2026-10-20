@@ -67,27 +67,34 @@ public sealed class DocumentIngestionIntegrationTests
             // Reload persisted rows rather than inspecting tracked entities.
             db.ChangeTracker.Clear();
 
-            var chunks = await db.DocumentChunks
-                .AsNoTracking()
-                .Where(chunk => chunk.DocumentId == result.DocumentId)
-                .OrderBy(chunk => chunk.ChunkIndex)
-                .ToListAsync();
+            var chunks = await db.DocumentChunks.AsNoTracking().Where(chunk => chunk.DocumentId == result.DocumentId).OrderBy(chunk => chunk.ChunkIndex).ToListAsync();
 
             Assert.IsTrue(result.WasInserted);
             Assert.IsTrue(chunks.Count > 1);
             Assert.AreEqual(result.ChunkCount, chunks.Count);
 
             CollectionAssert.AreEqual(Enumerable.Range(0, chunks.Count).ToArray(), chunks.Select(chunk => chunk.ChunkIndex).ToArray());
-
             Assert.IsFalse(chunks[0].Content.Contains(targetFact, StringComparison.Ordinal));
-
             Assert.IsTrue(chunks[^1].Content.Contains(targetFact, StringComparison.Ordinal));
+
+            // Re-ingesting the same source must reuse the stored document, even when the caller supplies changed content.
+            DocumentIngestionResult repeated = await ingestion.IngestAsync("Changed title", sourceUri, "Changed content that should not replace the stored document.");
+
+            Assert.IsFalse(repeated.WasInserted);
+            Assert.AreEqual(result.DocumentId, repeated.DocumentId);
+            Assert.AreEqual(result.ChunkCount, repeated.ChunkCount);
+
+            int documentCount = await db.Documents.CountAsync(document => document.SourceUri == sourceUri);
+
+            Assert.AreEqual(1, documentCount);
+
+            var storedContents = await db.DocumentChunks.AsNoTracking().Where(chunk => chunk.DocumentId == result.DocumentId).OrderBy(chunk => chunk.ChunkIndex).Select(chunk => chunk.Content).ToListAsync();
+
+            CollectionAssert.AreEqual(chunks.Select(chunk => chunk.Content).ToArray(), storedContents.ToArray());
 
             var matches = await search.SearchAsync("Where does Project Cedar keep its emergency recovery keys?", topK: 5);
 
-            Assert.IsTrue(matches.Any(match =>
-                    match.DocumentId == result.DocumentId &&
-                    match.Content.Contains(targetFact, StringComparison.Ordinal)), "The top five results should include the final fact " + "from the newly ingested document.");
+            Assert.IsTrue(matches.Any(match => match.DocumentId == result.DocumentId && match.Content.Contains(targetFact, StringComparison.Ordinal)), "The top five results should include the final fact " + "from the newly ingested document.");
 
             Console.WriteLine($"Stored chunks: {chunks.Count}");
 

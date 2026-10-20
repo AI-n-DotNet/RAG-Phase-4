@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../Database/CreateRagSchema.sql" />
+    <File Path="../TestInputFiles/TestInputFile01.txt" />
+  </Folder>
   <Project Path="../AInDotNet.RagDemo.Application/AInDotNet.RagDemo.Application.csproj" />
   <Project Path="../AInDotNet.RagDemo.Data/AInDotNet.RagDemo.Data.csproj" />
   <Project Path="../AInDotNet.RagDemo.Tests/AInDotNet.RagDemo.Tests.csproj" Id="1729fa2e-10de-4f3a-836c-a7a6a11b49b7" />

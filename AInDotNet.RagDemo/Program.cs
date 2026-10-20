@@ -44,6 +44,71 @@ using var host = builder.Build();
 
 
 using var scope = host.Services.CreateScope();
+
+// see if we are loading a text file document from the command line
+// To test this:
+// In the console project’s debug launch settings, set command-line arguments to
+// ingest "..\..\..\..\TestInputFiles\TestInputFile01.txt"
+// Ingest a text file without running the demonstration questions.
+if (args.Length > 0 && string.Equals(args[0], "ingest", StringComparison.OrdinalIgnoreCase))
+{
+    if (args.Length != 2)
+    {
+        Console.WriteLine("Usage: ingest \"full path to document.txt\"");
+        return;
+    }
+
+    TextFileDocument document = await TextFileDocument.LoadAsync(args[1]);
+
+    var ingestionService = scope.ServiceProvider.GetRequiredService<DocumentIngestionService>();
+
+    DocumentIngestionResult ingestionResult = await ingestionService.IngestAsync(document.Title, document.SourceUri, document.Content);
+
+    Console.WriteLine($"Document: {document.Title}");
+    Console.WriteLine($"Document ID: {ingestionResult.DocumentId}");
+    Console.WriteLine($"Chunks: {ingestionResult.ChunkCount}");
+    Console.WriteLine(ingestionResult.WasInserted ? "Document ingested." : "Document already exists; ingestion skipped.");
+
+    return;
+}
+
+// Ask command
+// Answer a question using documents already stored in the database.
+// To test this:
+// In the console project’s debug launch settings, set command-line arguments to
+// ask "Where does the AInDotNet demonstration store document embeddings?"
+if (args.Length > 0 && string.Equals(args[0], "ask", StringComparison.OrdinalIgnoreCase))
+{
+    if (args.Length != 2 || string.IsNullOrWhiteSpace(args[1]))
+    {
+        Console.WriteLine("Usage: ask \"your question\"");
+        return;
+    }
+
+    var answerService = scope.ServiceProvider.GetRequiredService<RagAnswerService>();
+
+    RagAnswerResult answerResult = await answerService.AnswerAsync(args[1], topK: 5);
+
+    Console.WriteLine($"QUESTION: {args[1]}");
+    Console.WriteLine();
+    Console.WriteLine("ANSWER:");
+    Console.WriteLine(answerResult.Answer);
+    Console.WriteLine();
+    Console.WriteLine("CITED SOURCES:");
+
+    foreach (var source in answerResult.Sources)
+    {
+        Console.WriteLine(
+            $"[{source.Label}] {source.DocumentTitle} " +
+            $"(Document {source.DocumentId}, " +
+            $"Chunk {source.ChunkId}, " +
+            $"Distance {source.Distance:F6})");
+    }
+
+    return;
+}
+
+
 using var db = scope.ServiceProvider.GetRequiredService<AInDotNetRAGContext>();
 var seeder = scope.ServiceProvider.GetRequiredService<RagDataSeeder>();
 

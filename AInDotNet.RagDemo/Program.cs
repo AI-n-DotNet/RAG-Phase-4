@@ -10,6 +10,30 @@ using OpenAI;
 using AInDotNet.RagDemo.Application.Retrieval;
 using AInDotNet.RagDemo.Application.Generation;
 
+
+// Reject unknown commands before configuring database or API access.
+// No arguments retains the existing demonstration workflow.
+if (args.Length > 0 && !string.Equals(args[0], "ingest", StringComparison.OrdinalIgnoreCase) && !string.Equals(args[0], "ask", StringComparison.OrdinalIgnoreCase))
+{
+    Console.Error.WriteLine($"Unknown command: {args[0]}");
+    Console.Error.WriteLine("Usage:");
+    Console.Error.WriteLine("  ingest \"full path to document.txt\"");
+    Console.Error.WriteLine("  ask \"your question\"");
+    Console.Error.WriteLine("  No arguments: run the demonstration.");
+
+    Environment.ExitCode = 1;
+    return;
+}
+
+// Validate command arguments before loading configuration or services.
+if (args.Length > 0 && (args.Length != 2 || string.IsNullOrWhiteSpace(args[1])))
+{
+    Console.Error.WriteLine(string.Equals(args[0], "ingest", StringComparison.OrdinalIgnoreCase) ? "Usage: ingest \"full path to document.txt\"" : "Usage: ask \"your question\"");
+
+    Environment.ExitCode = 1;
+    return;
+}
+
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Configuration.AddUserSecrets<Program>();
@@ -52,12 +76,6 @@ using var scope = host.Services.CreateScope();
 // Ingest a text file without running the demonstration questions.
 if (args.Length > 0 && string.Equals(args[0], "ingest", StringComparison.OrdinalIgnoreCase))
 {
-    if (args.Length != 2)
-    {
-        Console.WriteLine("Usage: ingest \"full path to document.txt\"");
-        return;
-    }
-
     TextFileDocument document = await TextFileDocument.LoadAsync(args[1]);
 
     var ingestionService = scope.ServiceProvider.GetRequiredService<DocumentIngestionService>();
@@ -79,12 +97,6 @@ if (args.Length > 0 && string.Equals(args[0], "ingest", StringComparison.Ordinal
 // ask "Where does the AInDotNet demonstration store document embeddings?"
 if (args.Length > 0 && string.Equals(args[0], "ask", StringComparison.OrdinalIgnoreCase))
 {
-    if (args.Length != 2 || string.IsNullOrWhiteSpace(args[1]))
-    {
-        Console.WriteLine("Usage: ask \"your question\"");
-        return;
-    }
-
     var answerService = scope.ServiceProvider.GetRequiredService<RagAnswerService>();
 
     RagAnswerResult answerResult = await answerService.AnswerAsync(args[1], topK: 5);

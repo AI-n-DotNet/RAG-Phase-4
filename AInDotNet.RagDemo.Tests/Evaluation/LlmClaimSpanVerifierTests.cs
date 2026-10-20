@@ -279,4 +279,38 @@ public sealed class LlmClaimSpanVerifierTests
         // Assert
         Assert.AreEqual(ClaimEntailmentOutcome.Entailed, outcome);
     }
+
+    [TestMethod]
+    [TestCategory("Integration")]
+    public async Task VerifyAsync_AttributedOAuthClaim_PreservesSourceAttribution()
+    {
+        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+
+        const string passage = "While the sources mention that enterprise RAG systems must " + "enforce authorization and that OAuth 2.0 provides a framework " + "for delegated authorization, they do not confirm that these " + "controls are implemented in the demonstration application " + "itself [S1, S5].";
+
+        const string claim = "The sources mention that OAuth 2.0 provides a framework " + "for delegated authorization.";
+
+        ClaimEntailmentOutcome outcome = await verifier.VerifyAsync(claim, passage, passage);
+
+        Console.WriteLine($"Entailment outcome: {outcome}");
+
+        Assert.AreEqual(ClaimEntailmentOutcome.Entailed, outcome);
+    }
+
+    [TestMethod]
+    [TestCategory("Integration")]
+    public async Task VerifyAsync_UnattributedOAuthClaim_ReportsOutcome()
+    {
+        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+
+        const string passage = "While the sources mention that enterprise RAG systems must " + "enforce authorization and that OAuth 2.0 provides a framework " + "for delegated authorization, they do not confirm that these " + "controls are implemented in the demonstration application " + "itself [S1, S5].";
+
+        const string claim = "OAuth 2.0 provides a framework for delegated authorization.";
+
+        ClaimEntailmentOutcome outcome = await verifier.VerifyAsync(claim, passage, passage);
+
+        Console.WriteLine($"Entailment outcome: {outcome}");
+
+        Assert.AreEqual(ClaimEntailmentOutcome.NotEstablished, outcome);
+    }
 }

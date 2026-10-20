@@ -37,6 +37,11 @@ public sealed class LlmPassageClaimExtractor : IPassageClaimExtractor
                 Rules:
                 - Extract independently verifiable factual assertions.
                 - Preserve meaning, qualifications, negation, uncertainty, and evidence scope.
+
+                - Preserve explicit source attribution when splitting compound assertions.
+                - If a passage says "the sources mention A and B", preserve that attribution separately in the extracted claims for both A and B.
+                - Example: "The sources mention that OAuth 2.0 provides delegated authorization" must retain its source attribution; do not extract only "OAuth 2.0 provides delegated authorization."
+
                 - Distinguish claims about retrieved evidence from claims about the underlying application or organization.
                 - If a passage describes what retrieved sources do not establish, preserve that evidence limitation in every extracted claim.
                 - Never convert missing evidence of implementation into an assertion of nonimplementation.

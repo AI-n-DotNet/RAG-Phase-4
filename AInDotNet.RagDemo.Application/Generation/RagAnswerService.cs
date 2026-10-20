@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Retrieval;
 using Microsoft.Extensions.AI;
-using System.Text.RegularExpressions;
 
 namespace AInDotNet.RagDemo.Application.Generation;
 
@@ -93,22 +92,16 @@ public sealed class RagAnswerService
 
                 Evidence scope and uncertainty:
                 - Distinguish absence of evidence from evidence of absence.
-                - If the retrieved passages do not establish whether a control
-                  is implemented, explicitly state that the retrieved sources
-                  do not establish its implementation status.
-                - Never interpret missing documentation as proof that a control
-                  is not implemented.
-                - Do not make broader claims about an application or organization
-                  when the evidence only establishes limitations of the retrieved sources.
+                - If the retrieved passages do not establish whether a control is implemented, explicitly state that the retrieved sources do not establish its implementation status.
+                - Never interpret missing documentation as proof that a control is not implemented.
+                - Do not make broader claims about an application or organization when the evidence only establishes limitations of the retrieved sources.
                 - Preserve uncertainty and evidence scope in the final answer.
 
                 Citation precision:
                 - Prefer short, independently verifiable factual statements.
                 - Attach citations to the specific claims each source supports.
-                - Do not attach multiple citations to a compound statement
-                  unless every cited source supports the entire statement.
-                - When different sources support different claims, separate
-                  those claims and cite them individually.
+                - Do not attach multiple citations to a compound statement unless every cited source supports the entire statement.
+                - When different sources support different claims, separate those claims and cite them individually.
                 - Do not cite a source merely because it discusses a related topic.
                 """),
 
@@ -128,34 +121,10 @@ public sealed class RagAnswerService
 
         string answer = response.Text ?? string.Empty;
 
-        // 6. Return only sources actually cited by the model.
-        // This checks citation-label membership, not whether the underlying factual claim is supported.
-        var citedLabels = Regex.Matches(answer, @"\bS\d+\b").Select(m => m.Value).ToHashSet(StringComparer.Ordinal);
-
-        // Remove citation labels that do not correspond to retrieved sources.
-        var validLabels = sources.Select(s => s.Label).ToHashSet(StringComparer.Ordinal);
-
-        answer = Regex.Replace(answer, @"\[(?:S\d+)(?:\s*,\s*S\d+)*\]",
-            match =>
-            {
-                var labels = Regex.Matches(
-                        match.Value,
-                        @"S\d+")
-                    .Select(m => m.Value)
-                    .Where(validLabels.Contains)
-                    .Distinct()
-                    .ToArray();
-
-                return labels.Length == 0
-                    ? string.Empty
-                    : $"[{string.Join(", ", labels)}]";
-            });
-
-        var citedSources = sources.Where(s => citedLabels.Contains(s.Label)).ToList();
-
-        var processed = CitationProcessor.Process(answer, sources);
-
-        return new RagAnswerResult(processed.Answer, processed.Sources, sources);
+        // 6. Normalize citations and return the cited subset
+        // alongside the complete retrieved context.
+        // This checks citation labels, not factual support.
+        return CitationProcessor.Process(answer, sources);
     }
 }
 

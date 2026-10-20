@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../AInDotNet.RagDemo.Application/AInDotNet.RagDemo.Application.csproj" />
+  <Project Path="../AInDotNet.RagDemo.Data/AInDotNet.RagDemo.Data.csproj" />
+  <Project Path="../AInDotNet.RagDemo.Tests/AInDotNet.RagDemo.Tests.csproj" Id="1729fa2e-10de-4f3a-836c-a7a6a11b49b7" />
+  <Project Path="AInDotNet.RagDemo.csproj" />
+</Solution>

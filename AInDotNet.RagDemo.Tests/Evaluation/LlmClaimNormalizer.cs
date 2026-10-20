@@ -36,6 +36,12 @@ public sealed class LlmClaimNormalizer : IClaimNormalizer
                 - Claims expressing the same factual assertion are duplicates,  even when their wording differs.
                 - Treat equivalent statements about missing evidence as duplicates.
                 - Preserve claims that differ materially in subject, scope, qualification, negation, or factual meaning.
+
+                - Contradictory claims are distinct assertions, never semantic duplicates.
+                - Preserve both an assertion and its negation when both appear in the input.
+                - Do not resolve contradictions or discard a claim because another claim conflicts with it.
+                - Requirements, actual implementation, explicit nonimplementation, and missing evidence of implementation are distinct meanings; preserve each when present.
+
                 - Do not combine distinct claims into compound claims.
                 - Do not invent new factual assertions.
                 - Do not determine whether claims are true.

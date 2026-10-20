@@ -313,4 +313,21 @@ public sealed class LlmClaimSpanVerifierTests
 
         Assert.AreEqual(ClaimEntailmentOutcome.NotEstablished, outcome);
     }
+
+    [TestMethod]
+    [TestCategory("Integration")]
+    public async Task VerifyAsync_RecommendationInConcessiveClause_ReturnsEntailed()
+    {
+        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+
+        const string passage = "While it is recommended that enterprise RAG systems enforce " + "authorization among other controls, the sources do not confirm " + "any actual implementation of authorization controls in your " + "application [S1].";
+
+        const string claim = "It is recommended that enterprise RAG systems enforce " + "authorization among other controls.";
+
+        ClaimEntailmentOutcome outcome = await verifier.VerifyAsync(claim, passage, passage);
+
+        Console.WriteLine($"Entailment outcome: {outcome}");
+
+        Assert.AreEqual(ClaimEntailmentOutcome.Entailed, outcome);
+    }
 }

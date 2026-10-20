@@ -160,7 +160,7 @@ Open **Test → Test Explorer** in Visual Studio.
 - Run an individual test while making a focused change.
 - Run the full suite at a checkpoint.
 
-**Recorded development checkpoint: 141 tests passed.** This is a reported run, not a guarantee that every environment or subsequent live-model run will produce the same result.
+**Recorded development checkpoint: 144 tests passed.** This is a reported run, not a guarantee that every environment or subsequent live-model run will produce the same result.
 
 Some tests use fakes; others call OpenAI, and some also require SQL Server. Tests are configured for method-level parallel execution, so combined test durations can exceed elapsed suite time.
 

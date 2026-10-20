@@ -72,5 +72,16 @@ public sealed class SemanticSearchIntegrationTests
         // Verify the integration returned results.
         Assert.IsNotEmpty(searchResults);
         Assert.AreEqual(topK, evaluation.TopK);
+
+        Assert.IsTrue(searchResults.Count <= topK, "Search must not return more than the requested number of chunks.");
+
+        Assert.AreEqual(searchResults.Count, searchResults.Select(result => result.ChunkId).Distinct().Count(), "Each retrieved chunk must appear only once.");
+
+        Assert.IsTrue(searchResults.All(result => double.IsFinite(result.Distance)), "Every result must have a finite distance.");
+
+        for (int index = 1; index < searchResults.Count; index++)
+        {
+            Assert.IsTrue(searchResults[index - 1].Distance <= searchResults[index].Distance, "Results must be ordered from lowest to highest cosine distance.");
+        }
     }
 }

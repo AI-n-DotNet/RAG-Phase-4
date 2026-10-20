@@ -75,7 +75,30 @@ using var scope = host.Services.CreateScope();
 // Ingest a text file without running the demonstration questions.
 if (args.Length > 0 && string.Equals(args[0], "ingest", StringComparison.OrdinalIgnoreCase))
 {
-    TextFileDocument document = await TextFileDocument.LoadAsync(args[1]);
+    TextFileDocument document;
+
+    try
+    {
+        document = await TextFileDocument.LoadAsync(args[1]);
+    }
+    catch (FileNotFoundException)
+    {
+        Console.Error.WriteLine($"File not found: {args[1]}");
+        Environment.ExitCode = 1;
+        return;
+    }
+    catch (DirectoryNotFoundException)
+    {
+        Console.Error.WriteLine($"Directory not found for file: {args[1]}");
+        Environment.ExitCode = 1;
+        return;
+    }
+    catch (ArgumentException ex)
+    {
+        Console.Error.WriteLine(ex.Message);
+        Environment.ExitCode = 1;
+        return;
+    }
 
     var ingestionService = scope.ServiceProvider.GetRequiredService<DocumentIngestionService>();
 

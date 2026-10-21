@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AInDotNet.RagDemo.Application\AInDotNet.RagDemo.Application.csproj" />
+    <ProjectReference Include="..\AInDotNet.RagDemo.Benchmarks\AInDotNet.RagDemo.Benchmarks.csproj" />
     <ProjectReference Include="..\AInDotNet.RagDemo.Data\AInDotNet.RagDemo.Data.csproj" />
   </ItemGroup>
 

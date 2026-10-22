@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Data;
 using AInDotNet.RagDemo.Data.Models;
-using global::AInDotNet.RagDemo.Data.Models;
 using Microsoft.Data.SqlTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;

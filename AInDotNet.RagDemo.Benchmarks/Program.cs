@@ -11,7 +11,7 @@ using OpenAI;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using AInDotNet.RagDemo.ExpressData.Models;
-
+//using DeveloperModels = AInDotNet.RagDemo.BenchmarkData.Models;
 
 string expressConnection;
 
@@ -288,8 +288,7 @@ for (int index = 0; index < nativeMatches.Count; index++)
     }
 }
 
-Console.WriteLine(
-    "PASS: Express and Developer rankings and scores agree.");
+Console.WriteLine("PASS: Express and Developer rankings and scores agree.");
 
 
 
@@ -327,45 +326,87 @@ Console.WriteLine($"Process architecture: {System.Runtime.InteropServices.Runtim
 Console.WriteLine($"Debugger attached: {System.Diagnostics.Debugger.IsAttached}");
 
 
-await RetrievalTimer.MeasureAsync("Developer native SQL ranking", async () => (await nativeQuery.ToListAsync()).Count, topK);
+var developerWorkerOptions = new DbContextOptionsBuilder<AInDotNetRAG_BenchmarkContext>().UseSqlServer(connectionString).Options;
 
-await RetrievalTimer.MeasureAsync("Express native SQL ranking", async () => (await expressQuery.ToListAsync()).Count, topK);
+// Developer completes before the Express benchmark begins.
 
-await RetrievalTimer.MeasureAsync("Cached C# ranking", () => Task.FromResult(InMemoryVectorSearch.Search(queryEmbedding, cachedVectors, topK).Count), topK);
-
-// Measure cosine calculations without allocating match objects
-// or selecting the top K.
-double similarityChecksum = 0;
-
-await RetrievalTimer.MeasureAsync("Cached C# cosine loop only — no ranking", () =>
+await ConcurrentRetrievalTimer.MeasureAsync("Developer native SQL — sixteen workers", () => new AInDotNetRAG_BenchmarkContext(developerWorkerOptions),
+    async workerDb =>
     {
-        double sum = 0;
-
-        foreach (var vector in cachedVectors)
-        {
-            sum += CosineSimilarity.Calculate(queryEmbedding, vector.Embedding);
-        }
-
-        // Keep the calculated result observable.
-        similarityChecksum = sum;
-
-        return Task.FromResult(cachedVectors.Count);
-    },
-    cachedVectors.Count);
-
-Console.WriteLine($"Similarity checksum: {similarityChecksum:F8}");
-
-
-await RetrievalTimer.MeasureAsync("Prepared cached C# ranking", () => Task.FromResult(PreparedVectorSearch.Search(queryEmbedding, preparedCache, topK).Count), topK);
-
-await RetrievalTimer.MeasureAsync("JSON load + deserialize + C# ranking (SQL Server 2025)",
-    async () =>
-    {
-        var vectors = await LegacyVectorLoader.LoadAsync(db);
-
-        var matches = InMemoryVectorSearch.Search(queryEmbedding, vectors, topK);
+        var matches = await workerDb.DocumentChunks
+            .AsNoTracking()
+            .Select(chunk => new
+            {
+                ChunkId = chunk.Id,
+                Distance = EF.Functions.VectorDistance("cosine", chunk.Embedding, queryVector)
+            })
+            .OrderBy(match => match.Distance)
+            .ThenBy(match => match.ChunkId)
+            .Take(topK)
+            .ToListAsync();
 
         return matches.Count;
     },
-    topK);
+    expectedResults: topK);
+
+await ConcurrentRetrievalTimer.MeasureAsync("Express native SQL — sixteen workers", () => new AInDotNetRAG_ExpressContext(expressOptions), async workerDb =>
+    {
+        var matches = await workerDb.DocumentChunks
+            .AsNoTracking()
+            .Select(chunk => new
+            {
+                ChunkId = chunk.Id,
+                Distance = EF.Functions.VectorDistance("cosine", chunk.Embedding, queryVector)
+            })
+            .OrderBy(match => match.Distance)
+            .ThenBy(match => match.ChunkId)
+            .Take(topK)
+            .ToListAsync();
+
+        return matches.Count;
+    },
+    expectedResults: topK);
+
+
+//await RetrievalTimer.MeasureAsync("Developer native SQL ranking", async () => (await nativeQuery.ToListAsync()).Count, topK);
+
+//await RetrievalTimer.MeasureAsync("Express native SQL ranking", async () => (await expressQuery.ToListAsync()).Count, topK);
+
+//await RetrievalTimer.MeasureAsync("Cached C# ranking", () => Task.FromResult(InMemoryVectorSearch.Search(queryEmbedding, cachedVectors, topK).Count), topK);
+
+//// Measure cosine calculations without allocating match objects
+//// or selecting the top K.
+//double similarityChecksum = 0;
+
+//await RetrievalTimer.MeasureAsync("Cached C# cosine loop only — no ranking", () =>
+//    {
+//        double sum = 0;
+
+//        foreach (var vector in cachedVectors)
+//        {
+//            sum += CosineSimilarity.Calculate(queryEmbedding, vector.Embedding);
+//        }
+
+//        // Keep the calculated result observable.
+//        similarityChecksum = sum;
+
+//        return Task.FromResult(cachedVectors.Count);
+//    },
+//    cachedVectors.Count);
+
+//Console.WriteLine($"Similarity checksum: {similarityChecksum:F8}");
+
+
+//await RetrievalTimer.MeasureAsync("Prepared cached C# ranking", () => Task.FromResult(PreparedVectorSearch.Search(queryEmbedding, preparedCache, topK).Count), topK);
+
+//await RetrievalTimer.MeasureAsync("JSON load + deserialize + C# ranking (SQL Server 2025)",
+//    async () =>
+//    {
+//        var vectors = await LegacyVectorLoader.LoadAsync(db);
+
+//        var matches = InMemoryVectorSearch.Search(queryEmbedding, vectors, topK);
+
+//        return matches.Count;
+//    },
+//    topK);
 

@@ -126,6 +126,51 @@ if (args.Length == 2 && (string.Equals(args[0], "import-express", StringComparis
 }
 
 
+if (args.Length == 1 && string.Equals(args[0], "list-questions", StringComparison.OrdinalIgnoreCase))
+{
+    foreach (var item in BenchmarkQuestions.All)
+        Console.WriteLine($"{item.CacheName}: {item.Text}");
+
+    Console.WriteLine($"Questions: {BenchmarkQuestions.All.Count}");
+    return;
+}
+
+if (args.Length == 2 && string.Equals(args[0], "prepare-questions", StringComparison.OrdinalIgnoreCase))
+{
+    string directory = Path.GetFullPath(args[1]);
+
+    foreach (var item in BenchmarkQuestions.All)
+    {
+        await BenchmarkQueryCache.GetOrCreateAsync(Path.Combine(directory, item.CacheName + ".json"), item.Text, embeddingModel, generator);
+    }
+
+    Console.WriteLine($"Prepared {BenchmarkQuestions.All.Count} question embeddings.");
+
+    return;
+}
+
+if (args.Length == 2 && string.Equals(args[0], "verify-questions", StringComparison.OrdinalIgnoreCase))
+{
+    string verificationConnection = builder.Configuration.GetConnectionString("ExpressConnection") ?? throw new InvalidOperationException("ExpressConnection is missing.");
+
+    var verificationOptions = new DbContextOptionsBuilder<AInDotNet.RagDemo.ExpressData.Models.AInDotNetRAG_ExpressContext>().UseSqlServer(verificationConnection).Options;
+
+    await using var verificationDb = new AInDotNet.RagDemo.ExpressData.Models.AInDotNetRAG_ExpressContext(verificationOptions);
+
+    await BenchmarkQuestionVerifier.VerifyAsync(db, verificationDb, Path.GetFullPath(args[1]), embeddingModel);
+
+    return;
+}
+
+if (args.Length == 2 && string.Equals(args[0], "benchmark-mixed", StringComparison.OrdinalIgnoreCase))
+{
+    string mixedExpressConnection = builder.Configuration.GetConnectionString("ExpressConnection") ?? throw new InvalidOperationException("ExpressConnection is missing.");
+
+    await MixedQuestionBenchmark.RunAsync(connectionString, mixedExpressConnection, Path.GetFullPath(args[1]), embeddingModel);
+
+    return;
+}
+
 
 const string question = "How are document access permissions enforced for a requesting user?";
 const int topK = 5;

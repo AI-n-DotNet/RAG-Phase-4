@@ -9,7 +9,14 @@ namespace AInDotNet.RagDemo.Benchmarks;
 
 public static class ConcurrentRetrievalTimer
 {
-    public static async Task MeasureAsync<TContext>(string name, Func<TContext> createContext, Func<TContext, Task<int>> search, int expectedResults, int workers = 16, int searchesPerWorker = 1000) where TContext : DbContext
+
+    // Existing single-question benchmarks continue to work unchanged.
+    public static Task MeasureAsync<TContext>(string name, Func<TContext> createContext, Func<TContext, Task<int>> search, int expectedResults, int workers = 16, int searchesPerWorker = 1000) where TContext : DbContext
+    {
+        return MeasureQueriesAsync(name, createContext, (context, worker, index) => search(context), expectedResults, workers, searchesPerWorker);
+    }
+
+    public static async Task MeasureQueriesAsync<TContext>(string name, Func<TContext> createContext, Func<TContext, int, int, Task<int>> search, int expectedResults, int workers = 16, int searchesPerWorker = 1000) where TContext : DbContext
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(workers);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(searchesPerWorker);
@@ -21,24 +28,23 @@ public static class ConcurrentRetrievalTimer
             for (int worker = 0; worker < workers; worker++)
                 contexts.Add(createContext());
 
-            // Warm every worker's context before starting measurement.
-            foreach (var context in contexts)
+            // Each worker warms all ten questions when given a rotating workload.
+            for (int worker = 0; worker < contexts.Count; worker++)
             {
                 for (int index = 0; index < 100; index++)
                 {
-                    if (await search(context) != expectedResults)
+                    if (await search(contexts[worker], worker, index) != expectedResults)
                     {
                         throw new InvalidOperationException("Unexpected result count during warm-up.");
                     }
                 }
             }
-
             var durations = new ConcurrentBag<double>();
             var failures = new ConcurrentQueue<string>();
 
             var startGate = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-            var tasks = contexts.Select(async context =>
+            var tasks = contexts.Select(async (context, worker) =>
             {
                 await startGate.Task;
 
@@ -49,7 +55,7 @@ public static class ConcurrentRetrievalTimer
 
                     try
                     {
-                        int count = await search(context);
+                        int count = await search(context, worker, index);
 
                         double elapsed = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
 

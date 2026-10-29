@@ -9,9 +9,20 @@ namespace AInDotNet.RagDemo.Tests.Benchmarks;
 
 public static class BenchmarkDatasetReader
 {
-    public static async Task<BenchmarkDataset> LoadAsync(string directory, string embeddingModel, CancellationToken cancellationToken = default)
+    // Existing callers continue to load the original 1,000 chunks.
+    public static Task<BenchmarkDataset> LoadAsync(string directory, string embeddingModel, CancellationToken cancellationToken = default)
     {
-        var passages = BenchmarkCorpus.Create();
+        return LoadAsync(directory, embeddingModel, 1000, cancellationToken);
+    }
+
+    public static async Task<BenchmarkDataset> LoadAsync(string directory, string embeddingModel, int chunkCount, CancellationToken cancellationToken = default)
+    {
+        IReadOnlyList<string> passages = chunkCount switch
+        {
+            1000 => BenchmarkCorpus.Create(),
+            10000 => BenchmarkCorpus.CreateTenThousand(),
+            _ => throw new ArgumentOutOfRangeException(nameof(chunkCount), "Supported dataset sizes are 1000 and 10000.")
+        };
         var chunks = new List<BenchmarkDatasetChunk>(passages.Count);
 
         for (int index = 0; index < passages.Count; index++)

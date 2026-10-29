@@ -9,7 +9,7 @@ namespace AInDotNet.RagDemo.Benchmarks;
 
 public static class ConcurrentRetrievalTimer
 {
-    public static async Task MeasureAsync<TContext>(string name, Func<TContext> createContext, Func<TContext, Task<int>> search, int expectedResults, int workers = 16, int searchesPerWorker = 5000) where TContext : DbContext
+    public static async Task MeasureAsync<TContext>(string name, Func<TContext> createContext, Func<TContext, Task<int>> search, int expectedResults, int workers = 16, int searchesPerWorker = 1000) where TContext : DbContext
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(workers);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(searchesPerWorker);

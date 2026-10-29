@@ -22,4 +22,19 @@ public sealed class BenchmarkCorpusTests
 
         Assert.IsTrue(first.All(passage => passage.Contains("fictional benchmark data", StringComparison.Ordinal)));
     }
+
+    [TestMethod]
+    public void CreateTenThousand_PreservesOriginalPrefixAndUniqueContent()
+    {
+        var original = BenchmarkCorpus.Create();
+        var expanded = BenchmarkCorpus.CreateTenThousand();
+
+        Assert.AreEqual(10000, expanded.Count);
+
+        CollectionAssert.AreEqual(original.ToArray(), expanded.Take(original.Count).ToArray(), "Existing cached passages must remain unchanged.");
+
+        Assert.AreEqual(10000, expanded.Distinct(StringComparer.Ordinal).Count());
+
+        CollectionAssert.AreEqual(expanded.ToArray(), BenchmarkCorpus.CreateTenThousand().ToArray(), "The expanded corpus must remain reproducible.");
+    }
 }

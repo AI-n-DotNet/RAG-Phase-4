@@ -61,18 +61,21 @@ var generator = scope.ServiceProvider.GetRequiredService<IEmbeddingGenerator<str
 
 //await BenchmarkDatasetLoader.LoadSmallDatasetAsync(db, generator);
 
-if (args.Length == 2 && string.Equals(args[0], "import-data", StringComparison.OrdinalIgnoreCase))
+if (args.Length == 2 && (string.Equals(args[0], "import-data", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "import-10k", StringComparison.OrdinalIgnoreCase)))
 {
-    BenchmarkDataset dataset = await BenchmarkDatasetReader.LoadAsync(Path.GetFullPath(args[1]), embeddingModel);
+    int chunkCount = string.Equals(args[0], "import-10k", StringComparison.OrdinalIgnoreCase) ? 10000 : 1000;
 
+    BenchmarkDataset dataset = await BenchmarkDatasetReader.LoadAsync(Path.GetFullPath(args[1]), embeddingModel, chunkCount);
     await BenchmarkDatasetImporter.ImportAsync(db, dataset);
 
     return;
 }
 
-if (args.Length == 2 && string.Equals(args[0], "inspect-data", StringComparison.OrdinalIgnoreCase))
+if (args.Length == 2 && (string.Equals(args[0], "inspect-data", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "inspect-10k", StringComparison.OrdinalIgnoreCase)))
 {
-    BenchmarkDataset dataset = await BenchmarkDatasetReader.LoadAsync(Path.GetFullPath(args[1]), embeddingModel);
+    int chunkCount = string.Equals(args[0], "inspect-10k", StringComparison.OrdinalIgnoreCase) ? 10000 : 1000;
+
+    BenchmarkDataset dataset = await BenchmarkDatasetReader.LoadAsync(Path.GetFullPath(args[1]), embeddingModel, chunkCount);
 
     Console.WriteLine($"Corpus: {dataset.CorpusVersion}");
     Console.WriteLine($"Model: {dataset.EmbeddingModel}");
@@ -82,13 +85,10 @@ if (args.Length == 2 && string.Equals(args[0], "inspect-data", StringComparison.
     return;
 }
 
-if (args.Length == 2 && (string.Equals(args[0], "prepare-preview", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "prepare-data", StringComparison.OrdinalIgnoreCase)))
+if (args.Length == 2 && (string.Equals(args[0], "prepare-preview", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "prepare-data", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "prepare-10k", StringComparison.OrdinalIgnoreCase)))
 {
-    bool preview = string.Equals(args[0], "prepare-preview", StringComparison.OrdinalIgnoreCase);
-
-    var corpus = BenchmarkCorpus.Create();
-
-    var passages = preview ? corpus.Take(3).ToArray() : corpus.ToArray();
+    IReadOnlyList<string> passages = string.Equals(args[0], "prepare-10k", StringComparison.OrdinalIgnoreCase) ? BenchmarkCorpus.CreateTenThousand()
+        : string.Equals(args[0], "prepare-preview", StringComparison.OrdinalIgnoreCase) ? BenchmarkCorpus.Create().Take(3).ToArray() : BenchmarkCorpus.Create();
 
     BenchmarkDataset dataset = await BenchmarkDatasetPreparer.PrepareAsync(directory: Path.GetFullPath(args[1]), passages: passages, embeddingModel: embeddingModel, generator: generator);
 
@@ -97,7 +97,7 @@ if (args.Length == 2 && (string.Equals(args[0], "prepare-preview", StringCompari
     return;
 }
 
-if (args.Length == 2 && string.Equals(args[0], "import-express", StringComparison.OrdinalIgnoreCase))
+if (args.Length == 2 && (string.Equals(args[0], "import-express", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "import-express-10k", StringComparison.OrdinalIgnoreCase)))
 {
     expressConnection = builder.Configuration.GetConnectionString("ExpressConnection") ?? throw new InvalidOperationException("ExpressConnection is missing.");
 
@@ -117,8 +117,9 @@ if (args.Length == 2 && string.Equals(args[0], "import-express", StringCompariso
         throw new InvalidOperationException($"Expected Express; connected to {edition}.");
     }
 
-    BenchmarkDataset dataset = await BenchmarkDatasetReader.LoadAsync(Path.GetFullPath(args[1]), embeddingModel);
+    int chunkCount = string.Equals(args[0], "import-express-10k", StringComparison.OrdinalIgnoreCase) ? 10000 : 1000;
 
+    BenchmarkDataset dataset = await BenchmarkDatasetReader.LoadAsync(Path.GetFullPath(args[1]), embeddingModel, chunkCount);
     await ExpressDatasetImporter.ImportAsync(expressDbImport, dataset);
 
     return;
@@ -330,7 +331,25 @@ var developerWorkerOptions = new DbContextOptionsBuilder<AInDotNetRAG_BenchmarkC
 
 // Developer completes before the Express benchmark begins.
 
-await ConcurrentRetrievalTimer.MeasureAsync("Developer native SQL — sixteen workers", () => new AInDotNetRAG_BenchmarkContext(developerWorkerOptions),
+await ConcurrentRetrievalTimer.MeasureAsync("Express native SQL — 10,000 chunks, sixteen workers", () => new AInDotNetRAG_ExpressContext(expressOptions), async workerDb =>
+{
+    var matches = await workerDb.DocumentChunks
+        .AsNoTracking()
+        .Select(chunk => new
+        {
+            ChunkId = chunk.Id,
+            Distance = EF.Functions.VectorDistance("cosine", chunk.Embedding, queryVector)
+        })
+        .OrderBy(match => match.Distance)
+        .ThenBy(match => match.ChunkId)
+        .Take(topK)
+        .ToListAsync();
+
+    return matches.Count;
+},
+    expectedResults: topK);
+
+await ConcurrentRetrievalTimer.MeasureAsync("Developer native SQL — 10,000 chunks, sixteen workers", () => new AInDotNetRAG_BenchmarkContext(developerWorkerOptions),
     async workerDb =>
     {
         var matches = await workerDb.DocumentChunks
@@ -349,23 +368,7 @@ await ConcurrentRetrievalTimer.MeasureAsync("Developer native SQL — sixteen wo
     },
     expectedResults: topK);
 
-await ConcurrentRetrievalTimer.MeasureAsync("Express native SQL — sixteen workers", () => new AInDotNetRAG_ExpressContext(expressOptions), async workerDb =>
-    {
-        var matches = await workerDb.DocumentChunks
-            .AsNoTracking()
-            .Select(chunk => new
-            {
-                ChunkId = chunk.Id,
-                Distance = EF.Functions.VectorDistance("cosine", chunk.Embedding, queryVector)
-            })
-            .OrderBy(match => match.Distance)
-            .ThenBy(match => match.ChunkId)
-            .Take(topK)
-            .ToListAsync();
 
-        return matches.Count;
-    },
-    expectedResults: topK);
 
 
 //await RetrievalTimer.MeasureAsync("Developer native SQL ranking", async () => (await nativeQuery.ToListAsync()).Count, topK);

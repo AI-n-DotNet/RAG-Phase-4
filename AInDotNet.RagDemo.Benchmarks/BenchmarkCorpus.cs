@@ -55,4 +55,27 @@ public static class BenchmarkCorpus
 
         return passages;
     }
+
+    public static IReadOnlyList<string> CreateTenThousand()
+    {
+        var original = Create();
+        var passages = new List<string>(10000);
+
+        // Preserve existing passage content, ordering, and cache IDs.
+        passages.AddRange(original);
+
+        for (int deployment = 1; deployment <= 9; deployment++)
+        {
+            foreach (string passage in original)
+            {
+                passages.Add(passage + " " +
+                    $"Additional fictional deployment group {deployment:D2}. " +
+                    $"This group has a review budget of " +
+                    $"{deployment * 250} staff hours per quarter and " +
+                    $"an escalation deadline of {deployment + 2} hours.");
+            }
+        }
+
+        return passages;
+    }
 }

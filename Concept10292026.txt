@@ -1,0 +1,137 @@
+AInDotNet has "AI Core Applications" - which are - standard AI applications that most large businesses have a need for
+
+
+So far, we have presented three AI Core Applications:
+
+1. Intelligent Document Processing (IDP). - this is the gold standard for how to present an AI Core application
+https://aindotnet.com/intelligent-document-processing/
+
+
+2. AI Assistants and Chatbots
+https://aindotnet.com/ai-assistants/
+
+
+3. Predictive AI & Forecasting
+https://aindotnet.com/forecasting/
+
+
+Another of the "AI Core Applications" is RAG (retrieval augmented generation)
+RAG will probably be AI Core Application #4
+
+When we introduce one of the AI Core Applications - we spend about a month teaching our audience all about the topic.
+
+4 long videos
+28 short videos
+12 articles - packaged into an articles Collection - maybe 300 pages
+whitepaper - can be 200+ pages
+
+I think it's very comphrehensive
+
+For the Forecasting AI Core Application, we created several code repositories
+
+AInDotNet.MLNET.CustomerChurnAInDotNet.MLNET.CustomerChurn
+https://github.com/AI-n-DotNet/AInDotNet.MLNET.CustomerChurn
+
+AInDotNet.MLNET.TaxiFareAInDotNet.MLNET.TaxiFare
+https://github.com/AI-n-DotNet/AInDotNet.MLNET.TaxiFare
+
+AInDotNet.MLNET.CreditCardFraud
+https://github.com/AI-n-DotNet/AInDotNet.MLNET.CreditCardFraud
+
+AInDotNet.MLNET.HousePricesAInDotNet.MLNET.HousePrices
+https://github.com/AI-n-DotNet/AInDotNet.MLNET.HousePrices
+
+
+BTW - our audience for this current application is - very experienced (15+ years) senior C#/.NET developers, architects, and similar.  Who know the basics of RAG. Not experts on RAG.
+
+We are not going to teach the basics of RAG in this Field Note. So assume they know the basics of RAG. They are experts on C#, .NET, SQL Server, and Entity Framework.
+
+
+-----
+
+But this application is different
+
+It's more of a "Field AI Development Note" (I am NOT tied to that term). 
+
+The background is:
+
+I am no expert at RAG but have implemented RAG systems and the question I get is - what RAG database did you use?
+
+When I tell them SQL Server - they about fall out of their chairs. Cannot believe it. Why would I do that?
+
+I should add - my RAG systems are not high performance. They might be - let this 100 page human resources (HR) manual be the golden truth. Let users ask questions from the HR manual.  Or a similar application from IT help desk
+
+In the C#/.NET ecosystem - we are very slow to bring new software products and especially new vendors into our production applications. 
+
+A new vendor's products = another huge chance at security vulnerabilities
+
+And there  is a high hurdle to even consider a new vendor:
+- product has to be actively maintained
+- we have to prove we have a correct license
+- has to be covered by snyk and sonarqube security
+etc.  
+
+So the challenge of this exercise is:
+
+Is there a good reason to look past SQL Server for a third party Vector Database?
+
+And SQL Server 2025 added the Vector data type
+
+<<SQL Server 2025 introduces a native VECTOR data type designed to store vector embeddings directly alongside traditional relational data. This feature eliminates the need for external vector databases, making SQL Server fully capable of supporting AI-powered semantic search, machine learning, and Retrieval-Augmented Generation (RAG) applications.>>
+
+Plus there are a lot of people out there saying C# is slow, .NET is slow, SQL Server is slow, Entity Framework is slow.
+
+So let's test that and see
+
+We basically tested three different databases:
+
+1. SQL Server Enterprise Developer 2025
+2. SQL Server Express 2025 (it is free)
+3. In memory cached data. Mostly just C# code loading the embeddings into memory and then searching memory data store
+
+-----
+In the introduction of this article, I want to include the following, to give the reader - how much of a document are we talking about?
+
+For our synthetic corpus, roughly:
+Chunks	Approximate Word pages
+1,000	150–200 pages
+10,000	1,800–2,400 pages
+
+
+These estimates assume single-spaced text at approximately 500 words per page. Double spacing would roughly double the page count.
+
+Our original passages contain about 75–100 words each. The additional 9,000 passages include extra deployment details, so they are slightly longer.
+
+Chunk count does not translate to a fixed number of pages. Real documents may use larger chunks and overlapping text; overlap means some words appear in multiple chunks. Our benchmark instead treats each short synthetic passage as one chunk.
+-----
+
+We ran tests with 1000 chunks and separate tests with 10000 chunks
+
+We also simulated some loading. We would simulate 1 person doing searches, 4, 8 and 16 people doing searches
+
+We created 10 different questions to search the database
+
+My feeling is - we tested / simulated enough to show that SQL Server 2025 is good for 80% of RAG applications.
+
+We included SQL Server Express 2025 - because 1. it is free 2. everything in Express should be copy-paste into SQL Server standard (and higher) versions - when you need higher performance
+
+A developer can do initial prototyping and testing using (free) SQL Server Express 2025. Once they have it proven - upgrade to SQL Server 2025
+
+Our analysis showed that SQL Server Enterprise developer uses 8 parallel threads(or is it workers?) for execution
+
+Whereas SQL Server Express uses only 1. Everything in Express is sequential
+
+That is the purpose of this exercise. For probably 80% of your RAG applications - SQL Server 2025 is probably a good choice
+
+Any questions about the concept? what we're trying to demonstrate?  Why we're doing this?  
+
+You can refer to the other chats in this project for more details
+
+After we answer your initial questions - I will upload a document that explains how I like to do teaching repository code reviews. And then have you review and clean up the code
+
+
+
+
+
+
+

@@ -8,22 +8,46 @@ These measurements cover retrieval—not complete RAG response time.
 
 ## Environment
 
-| Item | Configuration |
-|---|---|
-| Computer | Laptop; client and both database instances share hardware |
-| CPU | Intel Core Ultra 9 275HX; 24 cores / 24 logical processors |
-| Installed RAM | 64 GB |
-| Developer instance | SQL Server 2025 Enterprise Developer, 64-bit |
-| Developer build | 17.0.1145.4, RTM |
-| Express instance | SQL Server 2025 Express, 64-bit |
-| Express build | Not yet recorded |
-| Database compatibility | 170 |
-| Application | .NET 10.0.14, x64, Release |
-| Debugger | Detached |
-| SQL Server 2022 instance | Stopped for the concurrency experiments |
-| Other SQL instances | Both 2025 instances running; tested sequentially |
+| Item 					| Configuration 
+|						|
+| Computer 				| Laptop; client and both database instances share hardware 
+| OS Name				| Microsoft Windows 11 Pro
+| Version				| 10.0.26200 Build 26200
+| CPU 					| Intel Core Ultra 9 275HX; 24 cores / 24 logical processors 
+| Installed RAM 		| 64 GB |
+| Hard Drive			| SSD NVMe PM9E1 SED Samsung
+| Developer instance 	| SQL Server 2025 Enterprise Developer, 64-bit 
+| Express instance 		| SQL Server 2025 Express, 64-bit 
+| SQL instances 		| Both 2025 instances running; tested sequentially; on same hard drive |
+| Application 			| .NET 10.0.14, x64, Release |
+| Debugger 				| Detached |
 
-Before publication, also record Windows version, storage type, Express build, SQL memory settings, MAXDOP, cost threshold for parallelism, and the Git commit used for each result set.
+
+
+### SQL Server configuration recorded October 29, 2026
+
+Values below are running values unless otherwise noted.
+
+| Setting 							| Enterprise Developer 	| Express 
+|									|						|
+| Product version 					| 17.0.1145.4 			| 17.0.1145.4 
+| Product level 					| RTM 					| RTM 
+| Product update level 				| NULL—not reported 	| NULL—not reported 
+| Database compatibility level 		| 170 					| 170 
+| Cost threshold for parallelism 	| 5 					| 5 
+| MAXDOP 							| 8 					| 0 
+| Maximum server memory, MB 		| 2,147,483,647 		| 2,147,483,647 
+| Minimum server memory, MB 		| 0 / 16 				| 0 / 16 
+
+Express settings were recorded at 2:27 p.m. Eastern; Developer settings at 2:30 p.m. Eastern.
+
+The maximum-memory setting does not represent allocated memory or override edition limits. Both instances share the laptop’s physical RAM.
+
+MAXDOP 0 does not mean parallelism is disabled. However, the captured Express query plan explicitly reported serial execution because of its edition. Developer’s captured plan used eight parallel workers, consistent with its MAXDOP setting of 8.
+
+These settings were recorded after the benchmark runs. They document the observed configuration at collection time; historical consistency was not independently verified.
+
+
 
 ## Dataset
 

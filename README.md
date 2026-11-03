@@ -202,7 +202,7 @@ The full evaluator is exercised through tests. The `ask` command generates an an
 - No user-specific document authorization filtering.
 - Evaluation implementation currently resides in the test project.
 - Live model responses can vary.
-- No published workload benchmark establishes latency, concurrency, or scaling limits.
+- - See [benchmark results](doc/Benchmark-Results.md) for SQL Server 2025 Developer and Express vector-retrieval latency and throughput under the tested workloads. These measurements exclude embedding and answer generation and do not establish general scaling limits.
 
 Database-side retrieval avoids transferring every embedding into application memory, but exact search can still evaluate every qualifying vector inside SQL Server.
 

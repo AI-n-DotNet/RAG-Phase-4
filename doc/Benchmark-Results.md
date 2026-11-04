@@ -190,9 +190,7 @@ The `benchmark-mixed` command accepts an optional worker count of 4, 8, or 16, f
 Both editions use the selected worker count, the same ten saved questions, top-five selection, 100 warm-up searches per worker, and 1,000 measured searches per worker. Each invocation runs both editions once in the selected order. Reproducing the complete results matrix requires separate invocations for each worker count and both edition orders.
 Record the worker count, edition order, and Git commit for each run.
 
-The results table includes runs with reversed edition order. Execution order remains hard-coded in `MixedQuestionBenchmark.cs`; the command does not automatically reproduce the complete matrix. Record the selected worker count, edition order, and Git commit for each run.
 For each future run, save:
-
 - Timestamp and Git commit.
 - Dataset size and corpus/model identifiers.
 - Worker count, warm-up count, and measured search count.

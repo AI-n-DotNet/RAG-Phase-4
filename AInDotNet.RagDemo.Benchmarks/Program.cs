@@ -42,6 +42,32 @@ if (args.Length > 0)
     }
 }
 
+int workers = 16;
+bool developerFirst = false;
+
+if (args.Length > 0 && string.Equals(args[0], "benchmark-mixed", StringComparison.OrdinalIgnoreCase))
+{
+    bool valid = args.Length is >= 2 and <= 4 && !string.IsNullOrWhiteSpace(args[1]);
+
+    if (valid && args.Length >= 3)
+    {
+        valid = int.TryParse(args[2], out workers) && workers is (4 or 8 or 16);
+    }
+
+    string order = args.Length == 4 ? args[3] : "express-first";
+
+    developerFirst = string.Equals(order, "developer-first", StringComparison.OrdinalIgnoreCase);
+
+    valid = valid && (developerFirst || string.Equals(order, "express-first", StringComparison.OrdinalIgnoreCase));
+
+    if (!valid)
+    {
+        Console.Error.WriteLine("Usage: benchmark-mixed \"query-cache-directory\" " + "[4|8|16] [express-first|developer-first]");
+        Environment.ExitCode = 1;
+        return;
+    }
+}
+
 string expressConnection;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -83,12 +109,8 @@ using var host = builder.Build();
 
 
 using var scope = host.Services.CreateScope();
-
 var db = scope.ServiceProvider.GetRequiredService<AInDotNetRAG_BenchmarkContext>();
-
 var generator = scope.ServiceProvider.GetRequiredService<IEmbeddingGenerator<string, Embedding<float>>>();
-
-//await BenchmarkDatasetLoader.LoadSmallDatasetAsync(db, generator);
 
 if (args.Length == 2 && (string.Equals(args[0], "import-data", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "import-10k", StringComparison.OrdinalIgnoreCase)))
 {
@@ -134,12 +156,7 @@ if (args.Length == 2 && (string.Equals(args[0], "import-express", StringComparis
 
     await using var expressDbImport = new AInDotNetRAG_ExpressContext(options);
 
-    string edition = await expressDbImport.Database.SqlQueryRaw<string>(
-            """
-            SELECT CAST(SERVERPROPERTY('Edition') AS nvarchar(128))
-                AS [Value]
-            """)
-        .SingleAsync();
+    string edition = await expressDbImport.Database.SqlQueryRaw<string>("""SELECT CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS [Value]""").SingleAsync();
 
     if (!edition.Contains("Express", StringComparison.OrdinalIgnoreCase))
     {
@@ -193,35 +210,10 @@ if (args.Length == 2 && string.Equals(args[0], "verify-questions", StringCompari
 
 if (args.Length > 0 && string.Equals(args[0], "benchmark-mixed", StringComparison.OrdinalIgnoreCase))
 {
-    int workers = 16;
-
-    bool valid = args.Length is >= 2 and <= 4 && !string.IsNullOrWhiteSpace(args[1]);
-
-    if (valid && args.Length >= 3)
-    {
-        valid = int.TryParse(args[2], out workers) && workers is (4 or 8 or 16);
-    }
-
-    string order = args.Length == 4 ? args[3] : "express-first";
-
-    bool developerFirst = string.Equals(order, "developer-first", StringComparison.OrdinalIgnoreCase);
-
-    valid = valid && (developerFirst || string.Equals(order, "express-first", StringComparison.OrdinalIgnoreCase));
-
-    if (!valid)
-    {
-        Console.Error.WriteLine("Usage: benchmark-mixed \"query-cache-directory\" " + "[4|8|16] [express-first|developer-first]");
-        Environment.ExitCode = 1;
-        return;
-    }
-
     string mixedExpressConnection = builder.Configuration.GetConnectionString("ExpressConnection") ?? throw new InvalidOperationException("ExpressConnection is missing.");
-
     await MixedQuestionBenchmark.RunAsync(connectionString, mixedExpressConnection, Path.GetFullPath(args[1]), embeddingModel, workers, developerFirst);
-
     return;
 }
-
 
 const string question = "How are document access permissions enforced for a requesting user?";
 const int topK = 5;
@@ -235,9 +227,7 @@ CachedBenchmarkQuery savedQuery;
 if (File.Exists(queryCachePath))
 {
     string json = await File.ReadAllTextAsync(queryCachePath);
-
     savedQuery = JsonSerializer.Deserialize<CachedBenchmarkQuery>(json) ?? throw new InvalidOperationException("The saved question embedding is invalid.");
-
     Console.WriteLine("Reusing saved question embedding.");
 }
 else
@@ -307,7 +297,6 @@ var nativeMatches = await nativeQuery.ToListAsync();
 
 // Cached C# search: load once, then search vectors already in memory.
 var cachedVectors = await LegacyVectorLoader.LoadAsync(db);
-
 var cachedMatches = InMemoryVectorSearch.Search(queryEmbedding, cachedVectors, topK);
 
 if (nativeMatches.Count != topK || cachedMatches.Count != topK)
@@ -346,9 +335,7 @@ Console.WriteLine("Ranking only; cache loading excluded.");
 
 
 expressConnection = builder.Configuration.GetConnectionString("ExpressConnection") ?? throw new InvalidOperationException("ExpressConnection is missing.");
-
 var expressOptions = new DbContextOptionsBuilder<AInDotNetRAG_ExpressContext>().UseSqlServer(expressConnection).Options;
-
 await using var expressDb = new AInDotNetRAG_ExpressContext(expressOptions);
 
 var expressQuery = expressDb.DocumentChunks
@@ -387,11 +374,8 @@ for (int index = 0; index < nativeMatches.Count; index++)
 
 Console.WriteLine("PASS: Express and Developer rankings and scores agree.");
 
-
-
 // Preparation is outside search timing.
 var preparedCache = new PreparedVectorCache(cachedVectors);
-
 var preparedMatches = PreparedVectorSearch.Search(queryEmbedding, preparedCache, topK);
 
 if (preparedMatches.Count != cachedMatches.Count)
@@ -417,9 +401,7 @@ Console.WriteLine("Build configuration: RELEASE");
 #endif
 
 Console.WriteLine($"Runtime: {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
-
 Console.WriteLine($"Process architecture: {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}");
-
 Console.WriteLine($"Debugger attached: {System.Diagnostics.Debugger.IsAttached}");
 
 
@@ -445,8 +427,7 @@ await ConcurrentRetrievalTimer.MeasureAsync("Express native SQL — 10,000 chunk
 },
     expectedResults: topK);
 
-await ConcurrentRetrievalTimer.MeasureAsync("Developer native SQL — 10,000 chunks, sixteen workers", () => new AInDotNetRAG_BenchmarkContext(developerWorkerOptions),
-    async workerDb =>
+await ConcurrentRetrievalTimer.MeasureAsync("Developer native SQL — 10,000 chunks, sixteen workers", () => new AInDotNetRAG_BenchmarkContext(developerWorkerOptions), async workerDb =>
     {
         var matches = await workerDb.DocumentChunks
             .AsNoTracking()
@@ -463,49 +444,3 @@ await ConcurrentRetrievalTimer.MeasureAsync("Developer native SQL — 10,000 chu
         return matches.Count;
     },
     expectedResults: topK);
-
-
-
-
-//await RetrievalTimer.MeasureAsync("Developer native SQL ranking", async () => (await nativeQuery.ToListAsync()).Count, topK);
-
-//await RetrievalTimer.MeasureAsync("Express native SQL ranking", async () => (await expressQuery.ToListAsync()).Count, topK);
-
-//await RetrievalTimer.MeasureAsync("Cached C# ranking", () => Task.FromResult(InMemoryVectorSearch.Search(queryEmbedding, cachedVectors, topK).Count), topK);
-
-//// Measure cosine calculations without allocating match objects
-//// or selecting the top K.
-//double similarityChecksum = 0;
-
-//await RetrievalTimer.MeasureAsync("Cached C# cosine loop only — no ranking", () =>
-//    {
-//        double sum = 0;
-
-//        foreach (var vector in cachedVectors)
-//        {
-//            sum += CosineSimilarity.Calculate(queryEmbedding, vector.Embedding);
-//        }
-
-//        // Keep the calculated result observable.
-//        similarityChecksum = sum;
-
-//        return Task.FromResult(cachedVectors.Count);
-//    },
-//    cachedVectors.Count);
-
-//Console.WriteLine($"Similarity checksum: {similarityChecksum:F8}");
-
-
-//await RetrievalTimer.MeasureAsync("Prepared cached C# ranking", () => Task.FromResult(PreparedVectorSearch.Search(queryEmbedding, preparedCache, topK).Count), topK);
-
-//await RetrievalTimer.MeasureAsync("JSON load + deserialize + C# ranking (SQL Server 2025)",
-//    async () =>
-//    {
-//        var vectors = await LegacyVectorLoader.LoadAsync(db);
-
-//        var matches = InMemoryVectorSearch.Search(queryEmbedding, vectors, topK);
-
-//        return matches.Count;
-//    },
-//    topK);
-

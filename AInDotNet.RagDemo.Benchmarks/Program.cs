@@ -162,15 +162,23 @@ if (args.Length == 2 && string.Equals(args[0], "verify-questions", StringCompari
     return;
 }
 
-if (args.Length == 2 && string.Equals(args[0], "benchmark-mixed", StringComparison.OrdinalIgnoreCase))
+if (args.Length > 0 && string.Equals(args[0], "benchmark-mixed", StringComparison.OrdinalIgnoreCase))
 {
+    int workers = 16;
+
+    if ((args.Length != 2 && args.Length != 3) || string.IsNullOrWhiteSpace(args[1]) || (args.Length == 3 && (!int.TryParse(args[2], out workers) || workers is not (4 or 8 or 16))))
+    {
+        Console.Error.WriteLine("Usage: benchmark-mixed \"query-cache-directory\" [4|8|16]");
+        Environment.ExitCode = 1;
+        return;
+    }
+
     string mixedExpressConnection = builder.Configuration.GetConnectionString("ExpressConnection") ?? throw new InvalidOperationException("ExpressConnection is missing.");
 
-    await MixedQuestionBenchmark.RunAsync(connectionString, mixedExpressConnection, Path.GetFullPath(args[1]), embeddingModel);
+    await MixedQuestionBenchmark.RunAsync(connectionString, mixedExpressConnection, Path.GetFullPath(args[1]), embeddingModel, workers);
 
     return;
 }
-
 
 const string question = "How are document access permissions enforced for a requesting user?";
 const int topK = 5;

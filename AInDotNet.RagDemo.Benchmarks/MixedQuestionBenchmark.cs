@@ -12,8 +12,11 @@ namespace AInDotNet.RagDemo.Benchmarks;
 
 public static class MixedQuestionBenchmark
 {
-    public static async Task RunAsync(string developerConnection, string expressConnection, string directory, string embeddingModel)
+    public static async Task RunAsync(string developerConnection, string expressConnection, string directory, string embeddingModel, int workers = 16)
     {
+        if (workers is not (4 or 8 or 16))
+            throw new ArgumentOutOfRangeException(nameof(workers), "Use 4, 8, or 16 workers."); 
+        
         const int topK = 5;
 
         // Read and validate every question before starting measurements.
@@ -55,7 +58,7 @@ public static class MixedQuestionBenchmark
         Console.WriteLine("Question selection: deterministic rotation");
         Console.WriteLine("Ranking only; no embedding requests.");
 
-        await ConcurrentRetrievalTimer.MeasureQueriesAsync("Express — mixed questions, sixteen workers", () => new ExpressModels.AInDotNetRAG_ExpressContext(expressOptions),
+        await ConcurrentRetrievalTimer.MeasureQueriesAsync($"Express — mixed questions, {workers} workers", () => new ExpressModels.AInDotNetRAG_ExpressContext(expressOptions),
             async (workerDb, worker, index) =>
             {
                 var vector = vectors[(worker + index) % vectors.Count];
@@ -75,10 +78,10 @@ public static class MixedQuestionBenchmark
                 return matches.Count;
             },
             expectedResults: topK,
-            workers: 16,
+            workers: workers,
             searchesPerWorker: 1000);
 
-        await ConcurrentRetrievalTimer.MeasureQueriesAsync("Developer — mixed questions, sixteen workers", () => new DeveloperModels.AInDotNetRAG_BenchmarkContext(developerOptions),
+        await ConcurrentRetrievalTimer.MeasureQueriesAsync($"Developer — mixed questions, {workers} workers", () => new DeveloperModels.AInDotNetRAG_BenchmarkContext(developerOptions),
             async (workerDb, worker, index) =>
             {
                 var vector = vectors[(worker + index) % vectors.Count];
@@ -98,7 +101,7 @@ public static class MixedQuestionBenchmark
                 return matches.Count;
             },
             expectedResults: topK,
-            workers: 16,
+            workers: workers,
             searchesPerWorker: 1000);
 
     }

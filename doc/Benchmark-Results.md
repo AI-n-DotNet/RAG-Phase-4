@@ -9,7 +9,7 @@ These measurements cover retrieval—not complete RAG response time.
 ## Environment
 
 | Item 					| Configuration 
-|						|
+|---					|---
 | Computer 				| Laptop; client and both database instances share hardware 
 | OS Name				| Microsoft Windows 11 Pro
 | Version				| 10.0.26200 Build 26200
@@ -29,7 +29,7 @@ These measurements cover retrieval—not complete RAG response time.
 Values below are running values unless otherwise noted.
 
 | Setting 							| Enterprise Developer 	| Express 
-|									|						|
+|---								|---					|---
 | Product version 					| 17.0.1145.4 			| 17.0.1145.4 
 | Product level 					| RTM 					| RTM 
 | Product update level 				| NULL—not reported 	| NULL—not reported 
@@ -61,8 +61,8 @@ These settings were recorded after the benchmark runs. They document the observe
 - Ten fixed questions covering authorization, backups, ingestion, inventory, invoices, incidents, onboarding, deployment, maintenance, and support.
 - Question embeddings generated beforehand and reused.
 - Top-five IDs and scores agreed across editions for all ten questions.
-
-This is a controlled synthetic workload. It is not a representative HR corpus or a retrieval-quality evaluation.
+- This is a controlled synthetic workload. It is not a representative HR corpus or a retrieval-quality evaluation.
+- The results below compare SQL Server 2025 Enterprise Developer and Express using matching workloads. The memory-cached C# implementation was tested on a subset of scenarios and is not included in this results table.
 
 ## What Is Timed
 
@@ -104,14 +104,14 @@ Workers represent outstanding retrieval requests, not a count of human users.
 
 Ranges below are the minimum and maximum reported statistics from two runs, not confidence intervals or pooled percentiles.
 
-| Workers | Edition | Searches per run | Searches/sec | Median ms | p95 ms | p99 ms |
-|---:|---|---:|---:|---:|---:|---:|
-| 4 | Enterprise Developer | 4,000 | 585.8–588.0 | 4.957–5.082 | 13.004–13.572 | 16.178–19.542 |
-| 4 | Express | 4,000 | 203.2–210.0 | 18.264–18.332 | 27.465–32.151 | 30.630–37.030 |
-| 8 | Enterprise Developer | 8,000 | 655.6–664.6 | 9.501–9.663 | 24.542–25.151 | 31.133–38.461 |
-| 8 | Express | 8,000 | 205.5–210.8 | 30.881–39.911 | 60.652–67.759 | 69.567–76.905 |
-| 16 | Enterprise Developer | 16,000 | 586.8–705.7 | 20.802–21.995 | 55.149–101.330 | 66.871–134.851 |
-| 16 | Express | 16,000 | 193.8–217.1 | 51.326–53.575 | 152.652–158.149 | 177.217–181.115 |
+| Workers 	| Edition 				| Searches per run 	| Searches/sec 	| Median ms 	| p95 ms 			| p99 ms 
+|---		|---					|---				|---			|---			|---				|---
+| 4 		| Enterprise Developer 	| 4,000 			| 585.8–588.0 	| 4.957–5.082 	| 13.004–13.572 	| 16.178–19.542 
+| 4 		| Express 				| 4,000 			| 203.2–210.0 	| 18.264–18.332 | 27.465–32.151 	| 30.630–37.030 
+| 8 		| Enterprise Developer 	| 8,000 			| 655.6–664.6 	| 9.501–9.663 	| 24.542–25.151 	| 31.133–38.461 
+| 8 		| Express 				| 8,000 			| 205.5–210.8 	| 30.881–39.911 | 60.652–67.759 	| 69.567–76.905 
+| 16 		| Enterprise Developer 	| 16,000 			| 586.8–705.7 	| 20.802–21.995 | 55.149–101.330 	| 66.871–134.851 
+| 16 		| Express 				| 16,000 			| 193.8–217.1 	| 51.326–53.575 | 152.652–158.149 	| 177.217–181.115 
 
 All runs in this table reported zero failed searches.
 
@@ -119,11 +119,11 @@ All runs in this table reported zero failed searches.
 
 Separate actual-plan captures in SSMS showed:
 
-| Captured query | Execution | Elapsed ms | CPU ms |
-|---|---|---:|---:|
-| Enterprise Developer | Eight parallel workers | 4 | 20 |
-| Express | Serial | 13 | 13 |
-| Enterprise Developer with `MAXDOP 1` | Serial | 15 | 15 |
+| Captured query 						| Execution 				| Elapsed ms 	| CPU ms 
+|---									|---						|---			|---
+| Enterprise Developer 					| Eight parallel workers 	| 4 			| 20 
+| Express 								| Serial 					| 13 			| 13 
+| Enterprise Developer with `MAXDOP 1` 	| Serial 					| 15 			| 15 
 
 All three scanned 10,000 rows and reported zero physical reads.
 
@@ -161,22 +161,36 @@ The normal benchmark does not use `MAXDOP 1`.
 - No SQL Server 2022 or competing database performance comparison has been completed.
 - Early measurements used shorter warm-ups or an attached debugger and should not be mixed with the later benchmark results.
 
+## Configure User Secrets on the `AInDotNet.RagDemo.Benchmarks` project:
+
+- `ConnectionStrings:BenchmarkConnection`: Developer benchmark database.
+- `ConnectionStrings:ExpressConnection`: Express benchmark database.
+- `OpenAI:EmbeddingModel`: the model used for the saved embeddings (`text-embedding-3-small` in these measurements).
+- `OpenAI:ApiKey`: required by the current startup code, even when using saved embeddings.
+
+The `verify-questions` and `benchmark-mixed` commands reuse saved question embeddings and do not make embedding-generation requests.
+
 ## Reproduction
+
+These commands assume both benchmark databases are already populated with the same 10,000-chunk dataset and the ten saved question-embedding files are available. The examples use `.\RagBenchmarkCache\queries`, relative to the repository root; substitute your existing cache directory if it is elsewhere.
 
 From the repository root:
 
 ```powershell
-dotnet run --project .\AInDotNet.RagDemo.Benchmarks -c Release --no-launch-profile -- verify-questions "D:\RagBenchmarkCache\queries"
+dotnet run --project .\AInDotNet.RagDemo.Benchmarks -c Release --no-launch-profile -- verify-questions ".\RagBenchmarkCache\queries"
 ```
 
 Then:
 
 ```powershell
-dotnet run --project .\AInDotNet.RagDemo.Benchmarks -c Release --no-launch-profile -- benchmark-mixed "D:\RagBenchmarkCache\queries"
+dotnet run --project .\AInDotNet.RagDemo.Benchmarks -c Release --no-launch-profile -- benchmark-mixed ".\RagBenchmarkCache\queries"
 ```
 
-The current runner uses hard-coded worker counts and call order. Record those settings and the commit hash for each run.
+The `benchmark-mixed` command accepts an optional worker count of 4, 8, or 16. Omitting it defaults to 16. For example, append `4` after the query-cache directory to run four workers per edition.
 
+Express runs first, followed by Developer. Both editions use the selected worker count, the same ten saved questions, top-five selection, 100 warm-up searches per worker, and 1,000 measured searches per worker.
+
+The results table includes runs with reversed edition order. Execution order remains hard-coded in `MixedQuestionBenchmark.cs`; the command does not automatically reproduce the complete matrix. Record the selected worker count, edition order, and Git commit for each run.
 For each future run, save:
 
 - Timestamp and Git commit.

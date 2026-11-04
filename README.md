@@ -6,24 +6,29 @@ Designed for developers who already understand C#, .NET, SQL Server, and basic R
 
 **A specialized vector database is not a prerequisite for RAG.** This repository demonstrates implementation and evaluation. It does not yet establish performance at scale.
 
+This reference implementation helps .NET teams evaluate whether SQL Server can meet their RAG retrieval needs before introducing another database platform. It demonstrates implementation, answer-quality evaluation, and measured retrieval performance. Production suitability depends on each organization’s workload, access controls, and operational requirements.
+
 ## Prerequisites
 
 - **SQL Server 2025 (17.x) is required.** SQL Server 2022 and earlier lack the native vector functionality used here. Updating SSMS does not upgrade the database engine.
 - **SQL Server 2025 Developer Edition** was used to test this demonstration. It is free for development and testing and is not licensed for production use.
-- **SQL Server 2025 Express Edition** is also free and supports the native vector functionality used here, so we expect this application to work with it. **We have not tested this application on Express.** Express permits production use within its edition limits.
-- Express has lower CPU and memory limits than Developer Edition. These limits may reduce performance as data volume and concurrent usage increase. **We have not measured the performance difference; small workloads may show little difference.**
+- SQL Server 2025 Express Edition is free and permits production use within its edition limits. Vector retrieval was benchmarked on Express; see [benchmark results](doc/Benchmark-Results.md) . The complete ingest/ask walkthrough has been verified on Developer Edition only.
+- Express has lower resource limits than Developer Edition. In our tested vector-retrieval workloads, Developer achieved higher throughput and lower latency. See [benchmark results](doc/Benchmark-Results.md) for measurements, configuration, and limitations.
 - .NET 10 SDK and a compatible Visual Studio installation.  In October 2026 - we use Visual Studio 2026 and .NET 10
 - SQL Server Management Studio (SSMS).  We used version 22.10.2
 - An OpenAI API key with access to the configured models. Running ingestion, questions, and live integration tests incurs API usage charges.
 
 ## Solution structure
 
-| Project | Responsibility |
-|---|---|
-| `AInDotNet.RagDemo` | Console application and dependency injection |
-| `AInDotNet.RagDemo.Application` | Text loading, chunking, ingestion, retrieval, and grounded answers |
-| `AInDotNet.RagDemo.Data` | EF Core database models reverse engineered with EF Core Power Tools |
-| `AInDotNet.RagDemo.Tests` | Automated tests and the current evaluation framework |
+| Project 	| Responsibility 
+|---		|---
+| `AInDotNet.RagDemo` | Console application and dependency injection 
+| `AInDotNet.RagDemo.Application` | Text loading, chunking, ingestion, retrieval, and grounded answers 
+| `AInDotNet.RagDemo.Data` | EF Core database models reverse engineered with EF Core Power Tools 
+| `AInDotNet.RagDemo.Tests` | Automated tests and the current evaluation framework 
+| `AInDotNet.RagDemo.Benchmarks` | Separate console application for retrieval benchmarks |
+| `AInDotNet.RagDemo.BenchmarkData` | Reverse-engineered EF Core models for the Developer benchmark database |
+| `AInDotNet.RagDemo.ExpressData` | Reverse-engineered EF Core models for the Express benchmark database |
 
 The database remains the source of truth for the reverse-engineered data model.
 
@@ -78,7 +83,7 @@ The application requires **1,536-dimensional embeddings**. Changing embedding mo
 
 ## 4. Ingest a text file
 
-Create a UTF-8 text file, for example `D:\RagSamples\TestInputFile01.txt`:
+Create a UTF-8 text file, for example `.\TestInputFiles\TestInputFile01.txt`:
 
 ```text
 The AInDotNet demonstration stores document embeddings in SQL Server.
@@ -87,7 +92,7 @@ The AInDotNet demonstration stores document embeddings in SQL Server.
 In the console project’s debug launch settings, set the command-line arguments to:
 
 ```text
-ingest "D:\RagSamples\TestInputFile01.txt"
+ingest "..\TestInputFiles\TestInputFile01.txt"
 ```
 
 Run with **Ctrl+F5**.
@@ -95,7 +100,7 @@ Run with **Ctrl+F5**.
 Alternatively, from the repository root:
 
 ```powershell
-dotnet run --project .\AInDotNet.RagDemo -- ingest "D:\RagSamples\TestInputFile01.txt"
+dotnet run --project .\AInDotNet.RagDemo -- ingest ".\TestInputFiles\TestInputFile01.txt"
 ```
 
 The application reads the file, divides its text into overlapping chunks, generates embeddings, and saves the document and chunks through EF Core.
@@ -160,7 +165,7 @@ Open **Test → Test Explorer** in Visual Studio.
 - Run an individual test while making a focused change.
 - Run the full suite at a checkpoint.
 
-**Recorded development checkpoint: 144 tests passed.** This is a reported run, not a guarantee that every environment or subsequent live-model run will produce the same result.
+**Recorded development checkpoint: 155 tests passed.** This is a reported run, not a guarantee that every environment or subsequent live-model run will produce the same result.
 
 Some tests use fakes; others call OpenAI, and some also require SQL Server. Tests are configured for method-level parallel execution, so combined test durations can exceed elapsed suite time.
 
@@ -171,7 +176,7 @@ on SQL Server 2025 Developer Edition using an initially empty database.
 The application ingested a text file and answered a question with a
 citation to that document.
 
-SQL Server 2025 Express compatibility and performance remain untested.
+SQL Server 2025 Express vector retrieval was benchmarked alongside Developer Edition; see [benchmark results](doc/Benchmark-Results.md). The fresh-database application walkthrough described above was verified on Developer Edition only.
 
 
 ### Fresh-database considerations
@@ -202,7 +207,7 @@ The full evaluator is exercised through tests. The `ask` command generates an an
 - No user-specific document authorization filtering.
 - Evaluation implementation currently resides in the test project.
 - Live model responses can vary.
-- - See [benchmark results](doc/Benchmark-Results.md) for SQL Server 2025 Developer and Express vector-retrieval latency and throughput under the tested workloads. These measurements exclude embedding and answer generation and do not establish general scaling limits.
+- See [benchmark results](doc/Benchmark-Results.md) for SQL Server 2025 Developer and Express vector-retrieval latency and throughput under the tested workloads. These measurements exclude embedding and answer generation and do not establish general scaling limits.
 
 Database-side retrieval avoids transferring every embedding into application memory, but exact search can still evaluate every qualifying vector inside SQL Server.
 

@@ -11,7 +11,36 @@ using OpenAI;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using AInDotNet.RagDemo.ExpressData.Models;
-//using DeveloperModels = AInDotNet.RagDemo.BenchmarkData.Models;
+
+// Preserve the existing no-argument benchmark.
+if (args.Length > 0)
+{
+    string command = args[0].ToLowerInvariant();
+
+    bool validShape = command switch
+    {
+        "list-questions" => args.Length == 1,
+
+        "benchmark-mixed" => args.Length is >= 2 and <= 4 && !string.IsNullOrWhiteSpace(args[1]),
+
+        "prepare-preview" or "prepare-data" or "prepare-10k" or
+        "inspect-data" or "inspect-10k" or
+        "import-data" or "import-10k" or
+        "import-express" or "import-express-10k" or
+        "prepare-questions" or "verify-questions" =>
+            args.Length == 2 && !string.IsNullOrWhiteSpace(args[1]),
+
+        _ => false
+    };
+
+    if (!validShape)
+    {
+        Console.Error.WriteLine($"Unknown command or invalid arguments: {args[0]}");
+        Console.Error.WriteLine("Use list-questions, benchmark-mixed, or a documented " + "prepare, inspect, import, or verify command.");
+        Environment.ExitCode = 1;
+        return;
+    }
+}
 
 string expressConnection;
 
@@ -166,19 +195,33 @@ if (args.Length > 0 && string.Equals(args[0], "benchmark-mixed", StringCompariso
 {
     int workers = 16;
 
-    if ((args.Length != 2 && args.Length != 3) || string.IsNullOrWhiteSpace(args[1]) || (args.Length == 3 && (!int.TryParse(args[2], out workers) || workers is not (4 or 8 or 16))))
+    bool valid = args.Length is >= 2 and <= 4 && !string.IsNullOrWhiteSpace(args[1]);
+
+    if (valid && args.Length >= 3)
     {
-        Console.Error.WriteLine("Usage: benchmark-mixed \"query-cache-directory\" [4|8|16]");
+        valid = int.TryParse(args[2], out workers) && workers is (4 or 8 or 16);
+    }
+
+    string order = args.Length == 4 ? args[3] : "express-first";
+
+    bool developerFirst = string.Equals(order, "developer-first", StringComparison.OrdinalIgnoreCase);
+
+    valid = valid && (developerFirst || string.Equals(order, "express-first", StringComparison.OrdinalIgnoreCase));
+
+    if (!valid)
+    {
+        Console.Error.WriteLine("Usage: benchmark-mixed \"query-cache-directory\" " + "[4|8|16] [express-first|developer-first]");
         Environment.ExitCode = 1;
         return;
     }
 
     string mixedExpressConnection = builder.Configuration.GetConnectionString("ExpressConnection") ?? throw new InvalidOperationException("ExpressConnection is missing.");
 
-    await MixedQuestionBenchmark.RunAsync(connectionString, mixedExpressConnection, Path.GetFullPath(args[1]), embeddingModel, workers);
+    await MixedQuestionBenchmark.RunAsync(connectionString, mixedExpressConnection, Path.GetFullPath(args[1]), embeddingModel, workers, developerFirst);
 
     return;
 }
+
 
 const string question = "How are document access permissions enforced for a requesting user?";
 const int topK = 5;

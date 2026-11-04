@@ -186,9 +186,9 @@ Then:
 dotnet run --project .\AInDotNet.RagDemo.Benchmarks -c Release --no-launch-profile -- benchmark-mixed ".\RagBenchmarkCache\queries"
 ```
 
-The `benchmark-mixed` command accepts an optional worker count of 4, 8, or 16. Omitting it defaults to 16. For example, append `4` after the query-cache directory to run four workers per edition.
-
-Express runs first, followed by Developer. Both editions use the selected worker count, the same ten saved questions, top-five selection, 100 warm-up searches per worker, and 1,000 measured searches per worker.
+The `benchmark-mixed` command accepts an optional worker count of 4, 8, or 16, followed by an optional edition order: `express-first` or `developer-first`. Defaults are 16 workers and Express first. To specify edition order, also supply the worker count.
+Both editions use the selected worker count, the same ten saved questions, top-five selection, 100 warm-up searches per worker, and 1,000 measured searches per worker. Each invocation runs both editions once in the selected order. Reproducing the complete results matrix requires separate invocations for each worker count and both edition orders.
+Record the worker count, edition order, and Git commit for each run.
 
 The results table includes runs with reversed edition order. Execution order remains hard-coded in `MixedQuestionBenchmark.cs`; the command does not automatically reproduce the complete matrix. Record the selected worker count, edition order, and Git commit for each run.
 For each future run, save:

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Evaluation;
 
 namespace AInDotNet.RagDemo.Tests.Evaluation;
 
@@ -88,8 +89,7 @@ public sealed class FaithfulnessEvaluatorTests
         }
     }
 
-    private sealed class FakeClaimEvidenceVerifier
-        : IClaimEvidenceVerifier
+    private sealed class FakeClaimEvidenceVerifier : IClaimEvidenceVerifier
     {
         public IReadOnlyList<RagSource> ReceivedSources { get; private set; } = [];
 
@@ -121,9 +121,9 @@ public sealed class FaithfulnessEvaluatorTests
 
     public sealed class FakeDeduplicatingClaimNormalizer : IClaimNormalizer
     {
-        public Task<IReadOnlyList<string>> NormalizeAsync(            IReadOnlyList<string> claims,            CancellationToken cancellationToken = default)
+        public Task<IReadOnlyList<string>> NormalizeAsync(IReadOnlyList<string> claims, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult<IReadOnlyList<string>>(                claims.Take(1).ToList());
+            return Task.FromResult<IReadOnlyList<string>>(claims.Take(1).ToList());
         }
     }
 
@@ -213,7 +213,7 @@ public sealed class FaithfulnessEvaluatorTests
         var normalizer = new FakeDeduplicatingClaimNormalizer();
         var verifier = new FakeClaimEvidenceVerifier();
 
-        var evaluator = new FaithfulnessEvaluator(            extractor,            normalizer,            verifier);
+        var evaluator = new FaithfulnessEvaluator(extractor, normalizer, verifier);
 
         // Reuse an existing RagEvaluationRun fixture or constructor from your other tests.
         var result = await evaluator.EvaluateAsync(evaluationRun);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Evaluation;
 
 namespace AInDotNet.RagDemo.Tests.Evaluation;
 

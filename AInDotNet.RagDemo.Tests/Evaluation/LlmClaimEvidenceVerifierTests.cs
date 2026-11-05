@@ -1,4 +1,5 @@
 ﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Evaluation;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,5 @@
 ﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Evaluation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

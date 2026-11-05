@@ -1,4 +1,5 @@
-﻿using AInDotNet.RagDemo.Tests.Evaluation;
+﻿using AInDotNet.RagDemo.Evaluation;
+using AInDotNet.RagDemo.Tests.Evaluation;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -7,6 +7,7 @@
   <Project Path="../AInDotNet.RagDemo.BenchmarkData/AInDotNet.RagDemo.BenchmarkData.csproj" Id="fdc38144-0066-4535-afcb-988cc8d8504e" />
   <Project Path="../AInDotNet.RagDemo.Benchmarks/AInDotNet.RagDemo.Benchmarks.csproj" Id="e35db31f-8972-4586-8ef0-50ad57dc3725" />
   <Project Path="../AInDotNet.RagDemo.Data/AInDotNet.RagDemo.Data.csproj" />
+  <Project Path="../AInDotNet.RagDemo.Evaluation/AInDotNet.RagDemo.Evaluation.csproj" Id="c5a93c9c-77a8-4661-b996-b2ce5a14a1bd" />
   <Project Path="../AInDotNet.RagDemo.ExpressData/AInDotNet.RagDemo.ExpressData.csproj" Id="df6f15ed-3a60-44f9-82aa-ca029be79fcd" />
   <Project Path="../AInDotNet.RagDemo.Tests/AInDotNet.RagDemo.Tests.csproj" Id="1729fa2e-10de-4f3a-836c-a7a6a11b49b7" />
   <Project Path="AInDotNet.RagDemo.csproj" />

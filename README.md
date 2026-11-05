@@ -25,7 +25,8 @@ This reference implementation helps .NET teams evaluate whether SQL Server can m
 | `AInDotNet.RagDemo` | Console application and dependency injection 
 | `AInDotNet.RagDemo.Application` | Text loading, chunking, ingestion, retrieval, and grounded answers 
 | `AInDotNet.RagDemo.Data` | EF Core database models reverse engineered with EF Core Power Tools 
-| `AInDotNet.RagDemo.Tests` | Automated tests and the current evaluation framework 
+| 'AInDotNet.RagDemo.Evaluation' | Reusable retrieval, faithfulness, claim, citation, and abstention evaluation types and services |
+| 'AInDotNet.RagDemo.Tests' | Automated tests, fakes, and evaluation reference cases |
 | `AInDotNet.RagDemo.Benchmarks` | Separate console application for retrieval benchmarks |
 | `AInDotNet.RagDemo.BenchmarkData` | Reverse-engineered EF Core models for the Developer benchmark database |
 | `AInDotNet.RagDemo.ExpressData` | Reverse-engineered EF Core models for the Express benchmark database |
@@ -196,7 +197,7 @@ The test project includes checks for:
 - Requirements versus verified implementation.
 - Missing evidence versus explicit contradiction.
 
-The full evaluator is exercised through tests. The `ask` command generates an answer and displays citations; it does not run the full evaluation pipeline.
+The full evaluator resides in the Evaluation library and is exercised through tests. The `ask` command generates an answer and displays citations; it does not run the full evaluation pipeline.
 
 ## Current scope and limitations
 
@@ -205,7 +206,7 @@ The full evaluator is exercised through tests. The `ask` command generates an an
 - Retrieval uses exact cosine-distance search, without an approximate vector index.
 - No hybrid retrieval, reranking, or retrieval-distance cutoff.
 - No user-specific document authorization filtering.
-- Evaluation implementation currently resides in the test project.
+- Reusable evaluation code resides in the Evaluation library; tests, fakes, and reference cases remain in Tests.
 - Live model responses can vary.
 - See [benchmark results](doc/Benchmark-Results.md) for SQL Server 2025 Developer and Express vector-retrieval latency and throughput under the tested workloads. These measurements exclude embedding and answer generation and do not establish general scaling limits.
 

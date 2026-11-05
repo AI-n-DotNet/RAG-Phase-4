@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Evaluation;
 using AInDotNet.RagDemo.Tests.Evaluation;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;

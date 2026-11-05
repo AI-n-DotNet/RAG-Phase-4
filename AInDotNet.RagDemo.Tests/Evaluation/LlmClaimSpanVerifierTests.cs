@@ -1,6 +1,7 @@
 ﻿using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Application.Retrieval;
 using AInDotNet.RagDemo.Data.Models;
+using AInDotNet.RagDemo.Evaluation;
 using AInDotNet.RagDemo.Tests.Integration;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;

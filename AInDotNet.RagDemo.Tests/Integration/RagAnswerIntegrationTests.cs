@@ -2,6 +2,7 @@
 using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Application.Retrieval;
 using AInDotNet.RagDemo.Data.Models;
+using AInDotNet.RagDemo.Evaluation;
 using AInDotNet.RagDemo.Tests.Evaluation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;

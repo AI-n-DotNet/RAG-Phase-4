@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.AI;
@@ -10,8 +10,11 @@ public sealed class LlmClaimClassifier : IClaimClassifier
 {
     private readonly IChatClient _chatClient;
 
-    public LlmClaimClassifier(IChatClient chatClient)
+    private readonly Action<string>? _writeDiagnostic;
+
+    public LlmClaimClassifier(IChatClient chatClient, Action<string>? writeDiagnostic = null)
     {
+        _writeDiagnostic = writeDiagnostic;
         _chatClient = chatClient;
     }
 
@@ -77,7 +80,7 @@ public sealed class LlmClaimClassifier : IClaimClassifier
 
         if (Enum.TryParse<ClaimType>(classification, ignoreCase: true, out var claimType) && Enum.IsDefined(claimType))
         {
-            Console.WriteLine($"CLAIM TYPE: {claimType} | {claim}");
+            _writeDiagnostic?.Invoke($"CLAIM TYPE: {claimType} | {claim}");
             return claimType;
         }
 

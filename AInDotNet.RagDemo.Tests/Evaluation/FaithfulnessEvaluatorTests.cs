@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Generation;
@@ -70,6 +70,9 @@ public sealed class FaithfulnessEvaluatorTests
         // Both retrieved passages must reach the verifier,
         // even though only S1 was cited.
         Assert.AreEqual(2, verifier.ReceivedSources.Count);
+        CollectionAssert.AreEqual(
+            new[] { EvidenceScope.CompleteRetrievedSet, EvidenceScope.CompleteRetrievedSet },
+            verifier.ReceivedScopes.ToArray());
 
         CollectionAssert.AreEquivalent(new[] { "S1", "S2" }, verifier.ReceivedSources.Select(source => source.Label).ToArray());
     }
@@ -93,9 +96,12 @@ public sealed class FaithfulnessEvaluatorTests
     {
         public IReadOnlyList<RagSource> ReceivedSources { get; private set; } = [];
 
-        public Task<ClaimEvaluationResult> VerifyAsync(string claim, IReadOnlyList<RagSource> sources, CancellationToken cancellationToken = default)
+        public List<EvidenceScope> ReceivedScopes { get; } = [];
+
+        public Task<ClaimEvaluationResult> VerifyAsync(string claim, IReadOnlyList<RagSource> sources, EvidenceScope evidenceScope, CancellationToken cancellationToken = default)
         {
             ReceivedSources = sources;
+            ReceivedScopes.Add(evidenceScope);
 
             bool isRequirement = claim.Contains("must enforce", StringComparison.OrdinalIgnoreCase);
 
@@ -219,5 +225,26 @@ public sealed class FaithfulnessEvaluatorTests
         var result = await evaluator.EvaluateAsync(evaluationRun);
 
         Assert.AreEqual(1, result.TotalClaims);
+    }
+
+    [TestMethod]
+    public async Task VerifyAsync_DefaultScope_UsesCompleteRetrievedSet()
+    {
+        var capturingVerifier = new FakeClaimEvidenceVerifier();
+        IClaimEvidenceVerifier verifier = capturingVerifier;
+        IReadOnlyList<RagSource> sources =
+        [
+            new("S1", 1, 1, "Requirements",
+                "Enterprise RAG must enforce authorization.", 0.1)
+        ];
+
+        ClaimEvaluationResult result = await verifier.VerifyAsync(
+            "Enterprise RAG must enforce authorization.", sources);
+
+        CollectionAssert.AreEqual(
+            new[] { EvidenceScope.CompleteRetrievedSet },
+            capturingVerifier.ReceivedScopes.ToArray());
+        Assert.AreSame(sources, capturingVerifier.ReceivedSources);
+        Assert.AreEqual(ClaimSupportOutcome.Supported, result.Outcome);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
@@ -114,30 +114,30 @@ public sealed class LlmCitedClaimExtractor : ICitedClaimExtractor
                     {
                         throw new InvalidOperationException($"Cited claim extraction returned an unknown citation label: {label}");
                     }
+                }
 
-                    if (string.IsNullOrWhiteSpace(result.OriginalText) || !answer.Contains(result.OriginalText, StringComparison.Ordinal))
-                    {
-                        throw new InvalidOperationException(
-                            "Cited claim extraction returned original text not found in the answer." +
-                            Environment.NewLine +
-                            $"Claim: {result.Claim}" +
-                            Environment.NewLine +
-                            $"OriginalText: [{result.OriginalText}]" +
-                            Environment.NewLine +
-                            $"Answer: [{answer}]");
-                    }
-                    var spanLabels = CitationReferenceExtractor.Extract(result.OriginalText);
+                if (string.IsNullOrWhiteSpace(result.OriginalText) || !answer.Contains(result.OriginalText, StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException(
+                        "Cited claim extraction returned original text not found in the answer." +
+                        Environment.NewLine +
+                        $"Claim: {result.Claim}" +
+                        Environment.NewLine +
+                        $"OriginalText: [{result.OriginalText}]" +
+                        Environment.NewLine +
+                        $"Answer: [{answer}]");
+                }
 
-                    if (!spanLabels.ToHashSet(StringComparer.Ordinal).SetEquals(result.CitationLabels))
-                    {
-                        //throw new InvalidOperationException("Cited claim extraction returned citations that do not match the original text.");
-                        throw new InvalidOperationException(
-                            $"Cited claim extraction returned citations that do not match the original text. " +
-                            $"Claim: {result.Claim} | " +
-                            $"Reported labels: {string.Join(", ", result.CitationLabels)} | " +
-                            $"Labels in original text: {string.Join(", ", spanLabels)} | " +
-                            $"Original text: {result.OriginalText}");
-                    }
+                var spanLabels = CitationReferenceExtractor.Extract(result.OriginalText);
+
+                if (!spanLabels.ToHashSet(StringComparer.Ordinal).SetEquals(result.CitationLabels))
+                {
+                    throw new InvalidOperationException(
+                        $"Cited claim extraction returned citations that do not match the original text. " +
+                        $"Claim: {result.Claim} | " +
+                        $"Reported labels: {string.Join(", ", result.CitationLabels)} | " +
+                        $"Labels in original text: {string.Join(", ", spanLabels)} | " +
+                        $"Original text: {result.OriginalText}");
                 }
             }
 

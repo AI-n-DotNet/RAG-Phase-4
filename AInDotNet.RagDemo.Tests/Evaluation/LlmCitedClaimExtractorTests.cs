@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Evaluation;
+using AInDotNet.RagDemo.Evaluation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -135,5 +135,51 @@ public sealed class LlmCitedClaimExtractorTests
         Assert.AreEqual("Enterprise RAG requires authorization.", results[0].Claim);
 
         CollectionAssert.AreEqual(new[] { "S5" }, results[0].CitationLabels.ToArray());
+    }
+
+    [TestMethod]
+    public async Task ExtractAsync_UncitedClaimWithInventedOriginalText_ThrowsException()
+    {
+        const string answer = "Enterprise RAG requires authorization.";
+        const string llmResponse = """
+        [
+            {
+                "claim": "The application implements authorization.",
+                "citationLabels": [],
+                "originalText": "The application implements authorization."
+            }
+        ]
+        """;
+
+        var extractor = new LlmCitedClaimExtractor(new FakeChatClient(llmResponse));
+
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => extractor.ExtractAsync(answer));
+
+        StringAssert.StartsWith(exception.Message,
+            "Cited claim extraction returned original text not found in the answer.");
+    }
+
+    [TestMethod]
+    public async Task ExtractAsync_OmittedCitationLabels_ThrowsException()
+    {
+        const string answer = "Enterprise RAG requires authorization [S1].";
+        const string llmResponse = """
+        [
+            {
+                "claim": "Enterprise RAG requires authorization.",
+                "citationLabels": [],
+                "originalText": "Enterprise RAG requires authorization [S1]."
+            }
+        ]
+        """;
+
+        var extractor = new LlmCitedClaimExtractor(new FakeChatClient(llmResponse));
+
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => extractor.ExtractAsync(answer));
+
+        StringAssert.StartsWith(exception.Message,
+            "Cited claim extraction returned citations that do not match the original text.");
     }
 }

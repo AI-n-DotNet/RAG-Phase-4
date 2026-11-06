@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Evaluation;
+using AInDotNet.RagDemo.Evaluation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,8 +9,11 @@ public sealed class PassageBasedCitedClaimExtractor : ICitedClaimExtractor
 {
     private readonly IPassageClaimExtractor _claimExtractor;
 
-    public PassageBasedCitedClaimExtractor(IPassageClaimExtractor claimExtractor)
+    private readonly Action<string>? _writeDiagnostic;
+
+    public PassageBasedCitedClaimExtractor(IPassageClaimExtractor claimExtractor, Action<string>? writeDiagnostic = null)
     {
+        _writeDiagnostic = writeDiagnostic;
         _claimExtractor = claimExtractor;
     }
 
@@ -18,7 +21,7 @@ public sealed class PassageBasedCitedClaimExtractor : ICitedClaimExtractor
     {
         ArgumentNullException.ThrowIfNull(answer);
 
-        var passages = CitedPassageExtractor.Extract(answer);
+        var passages = CitedPassageExtractor.Extract(answer, _writeDiagnostic);
 
         if (passages.Count == 0)
             return [];

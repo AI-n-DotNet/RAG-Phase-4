@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Evaluation;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,11 @@ public sealed class CitationVerifier : ICitationVerifier
     private readonly IClaimEvidenceVerifier _evidenceVerifier;
     private readonly IClaimClassifier _claimClassifier;
 
-    public CitationVerifier(ICitedClaimExtractor claimExtractor, CitedClaimSemanticValidator semanticValidator, IClaimEvidenceVerifier evidenceVerifier, IClaimClassifier claimClassifier)
+    private readonly Action<string>? _writeDiagnostic;
+
+    public CitationVerifier(ICitedClaimExtractor claimExtractor, CitedClaimSemanticValidator semanticValidator, IClaimEvidenceVerifier evidenceVerifier, IClaimClassifier claimClassifier, Action<string>? writeDiagnostic = null)
     {
+        _writeDiagnostic = writeDiagnostic;
         _claimExtractor = claimExtractor;
         _semanticValidator = semanticValidator;
         _evidenceVerifier = evidenceVerifier;
@@ -67,16 +70,9 @@ public sealed class CitationVerifier : ICitationVerifier
 
             if (!isSemanticallyValid)
             {
-                Console.WriteLine($"REJECTED CLAIM: {citedClaim.Claim}");
-                Console.WriteLine($"ORIGINAL PASSAGE: {citedClaim.OriginalText}");
+                _writeDiagnostic?.Invoke($"REJECTED CLAIM: {citedClaim.Claim}");
+                _writeDiagnostic?.Invoke($"ORIGINAL PASSAGE: {citedClaim.OriginalText}");
                 throw new InvalidOperationException($"Cited claim does not match its original answer passage: {citedClaim.Claim}");
-            }
-
-            if (_claimClassifier is not null)
-            {
-                ClaimType claimType = await _claimClassifier.ClassifyAsync(citedClaim.Claim, cancellationToken);
-                //Console.WriteLine($"CLAIM CLASSIFICATION: {claimType} | {citedClaim.Claim}");
-                //Console.WriteLine($"ORIGINAL PASSAGE: {citedClaim.OriginalText}");
             }
 
             foreach (string citationLabel in citedClaim.CitationLabels)

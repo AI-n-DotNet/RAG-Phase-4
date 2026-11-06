@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Evaluation;
 using System;
 using System.Collections.Generic;
@@ -93,6 +93,8 @@ public sealed class CitationVerifierTests
 
         // Assert
         Assert.AreEqual("TEST-002", result.EvaluationCaseId);
+        CollectionAssert.AreEqual(
+            new[] { EvidenceScope.IndividualSource }, evidenceVerifier.ReceivedScopes.ToArray());
         Assert.AreEqual(1, result.TotalCitations);
         Assert.AreEqual(1, result.SupportedCitations);
         Assert.AreEqual(0, result.UnsupportedCitations);
@@ -649,5 +651,71 @@ public sealed class CitationVerifierTests
         Assert.AreEqual(1, result.TotalFactualClaims);
         Assert.AreEqual(1, result.CitedFactualClaims);
         Assert.AreEqual(1.0, result.FactualCitationCoverage);
+    }
+
+    [TestMethod]
+    public async Task VerifyAsync_ClassifiesEachClaimExactlyOnce()
+    {
+        const string citedClaim = "Enterprise RAG requires authorization.";
+        const string uncitedClaim = "Enterprise RAG requires auditing.";
+        var claims = new[]
+        {
+            new CitedClaim
+            {
+                Claim = citedClaim,
+                CitationLabels = ["S1"],
+                OriginalText = "Enterprise RAG requires authorization [S1]."
+            },
+            new CitedClaim
+            {
+                Claim = uncitedClaim,
+                CitationLabels = [],
+                OriginalText = uncitedClaim
+            }
+        };
+
+        var classifier = new CountingClaimClassifier();
+        var verifier = new CitationVerifier(
+            new FakeCitedClaimExtractor(claims),
+            new CitedClaimSemanticValidator(
+                new LlmClaimSpanVerifier(new FakeChatClient("SUPPORTED"))),
+            new FakeClaimEvidenceVerifier(ClaimSupportOutcome.Supported),
+            classifier);
+
+        var source = new RagSource(
+            "S1", 101, 10, "Enterprise RAG",
+            "Enterprise RAG requires authorization.", 0.25);
+        var run = new RagEvaluationRun
+        {
+            EvaluationCaseId = "TEST-CLASSIFICATION-COUNT",
+            Question = "What does enterprise RAG require?",
+            Answer = "Enterprise RAG requires authorization [S1]. " + uncitedClaim,
+            RetrievedSources = [source],
+            CitedSources = [source],
+            ExecutedAtUtc = DateTimeOffset.UtcNow,
+            TopK = 1
+        };
+
+        CitationVerificationResult result = await verifier.VerifyAsync(run);
+
+        Assert.AreEqual(2, classifier.ClassifiedClaims.Count);
+        Assert.AreEqual(1, classifier.ClassifiedClaims.Count(claim => claim == citedClaim));
+        Assert.AreEqual(1, classifier.ClassifiedClaims.Count(claim => claim == uncitedClaim));
+        Assert.AreEqual(2, result.TotalFactualClaims);
+        Assert.AreEqual(1, result.CitedFactualClaims);
+        Assert.AreEqual(0.5, result.FactualCitationCoverage);
+        Assert.AreEqual(1.0, result.CitationAccuracy);
+    }
+
+    private sealed class CountingClaimClassifier : IClaimClassifier
+    {
+        public List<string> ClassifiedClaims { get; } = [];
+
+        public Task<ClaimType> ClassifyAsync(
+            string claim, CancellationToken cancellationToken = default)
+        {
+            ClassifiedClaims.Add(claim);
+            return Task.FromResult(ClaimType.Factual);
+        }
     }
 }

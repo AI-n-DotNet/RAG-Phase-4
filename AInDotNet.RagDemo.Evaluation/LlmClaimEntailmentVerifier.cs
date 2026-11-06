@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.AI;
@@ -10,8 +10,11 @@ public sealed class LlmClaimEntailmentVerifier : IClaimEntailmentVerifier
 {
     private readonly IChatClient _chatClient;
 
-    public LlmClaimEntailmentVerifier(IChatClient chatClient)
+    private readonly Action<string>? _writeDiagnostic;
+
+    public LlmClaimEntailmentVerifier(IChatClient chatClient, Action<string>? writeDiagnostic = null)
     {
+        _writeDiagnostic = writeDiagnostic;
         _chatClient = chatClient;
     }
 
@@ -255,14 +258,17 @@ public sealed class LlmClaimEntailmentVerifier : IClaimEntailmentVerifier
 
         var root = diagnostic.RootElement;
 
-        Console.WriteLine($"PASSAGE ATTRIBUTION: {root.GetProperty("passageAttribution")}");
-        Console.WriteLine($"CLAIM ATTRIBUTION: {root.GetProperty("claimAttribution")}");
+        var passageAttribution = root.GetProperty("passageAttribution");
+        var claimAttribution = root.GetProperty("claimAttribution");
+
+        _writeDiagnostic?.Invoke($"PASSAGE ATTRIBUTION: {passageAttribution}");
+        _writeDiagnostic?.Invoke($"CLAIM ATTRIBUTION: {claimAttribution}");
 
         string verdict = root.GetProperty("outcome").GetString() ?? throw new InvalidOperationException("Missing outcome.");
         string? explanation = root.GetProperty("explanation").GetString();
 
-        Console.WriteLine($"VERIFIER OUTCOME: {verdict}");
-        Console.WriteLine($"VERIFIER EXPLANATION: {explanation}");
+        _writeDiagnostic?.Invoke($"VERIFIER OUTCOME: {verdict}");
+        _writeDiagnostic?.Invoke($"VERIFIER EXPLANATION: {explanation}");
 
         if (Enum.TryParse<ClaimEntailmentOutcome>(verdict, ignoreCase: true, out var outcome) && Enum.IsDefined(outcome))
         {

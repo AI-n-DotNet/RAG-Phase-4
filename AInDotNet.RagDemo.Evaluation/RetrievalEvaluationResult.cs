@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AInDotNet.RagDemo.Tes.Evaluation;
+namespace AInDotNet.RagDemo.Evaluation;
 
 public sealed class RetrievalEvaluationResult
 {

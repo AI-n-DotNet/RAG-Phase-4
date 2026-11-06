@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +9,7 @@ namespace AInDotNet.RagDemo.Evaluation;
 
 public static class CitedPassageExtractor
 {
-    public static IReadOnlyList<CitedPassage> Extract(string answer)
+    public static IReadOnlyList<CitedPassage> Extract(string answer, Action<string>? writeDiagnostic = null)
     {
         ArgumentNullException.ThrowIfNull(answer);
 
@@ -74,8 +74,8 @@ public static class CitedPassageExtractor
 
         foreach (var passage in passages)
         {
-            Console.WriteLine($"PASSAGE {passage.PassageId}: {passage.OriginalText}");
-            Console.WriteLine($"CITATIONS: {string.Join(", ", passage.CitationLabels)}");
+            writeDiagnostic?.Invoke($"PASSAGE {passage.PassageId}: {passage.OriginalText}");
+            writeDiagnostic?.Invoke($"CITATIONS: {string.Join(", ", passage.CitationLabels)}");
         }
 
         return passages;

@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,8 +12,11 @@ public sealed class FaithfulnessEvaluator : IFaithfulnessEvaluator
     private readonly IClaimNormalizer _claimNormalizer;
     private readonly IClaimEvidenceVerifier _evidenceVerifier;
 
-    public FaithfulnessEvaluator(IClaimExtractor claimExtractor, IClaimNormalizer claimNormalizer, IClaimEvidenceVerifier evidenceVerifier)
+    private readonly Action<string>? _writeDiagnostic;
+
+    public FaithfulnessEvaluator(IClaimExtractor claimExtractor, IClaimNormalizer claimNormalizer, IClaimEvidenceVerifier evidenceVerifier, Action<string>? writeDiagnostic = null)
     {
+        _writeDiagnostic = writeDiagnostic;
         _claimExtractor = claimExtractor;
         _claimNormalizer = claimNormalizer;
         _evidenceVerifier = evidenceVerifier;
@@ -27,16 +30,16 @@ public sealed class FaithfulnessEvaluator : IFaithfulnessEvaluator
         var uniqueClaims = claims.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         var normalizedClaims = await _claimNormalizer.NormalizeAsync(uniqueClaims, cancellationToken);
 
-        Console.WriteLine($"RAW CLAIM COUNT: {claims.Count}");
+        _writeDiagnostic?.Invoke($"RAW CLAIM COUNT: {claims.Count}");
         foreach (string claim in claims)
         {
-            Console.WriteLine($"RAW CLAIM: {claim}");
+            _writeDiagnostic?.Invoke($"RAW CLAIM: {claim}");
         }
 
-        Console.WriteLine($"NORMALIZED CLAIM COUNT: {normalizedClaims.Count}");
+        _writeDiagnostic?.Invoke($"NORMALIZED CLAIM COUNT: {normalizedClaims.Count}");
         foreach (string claim in normalizedClaims)
         {
-            Console.WriteLine($"NORMALIZED CLAIM: {claim}");
+            _writeDiagnostic?.Invoke($"NORMALIZED CLAIM: {claim}");
         }
 
         var results = new List<ClaimEvaluationResult>();

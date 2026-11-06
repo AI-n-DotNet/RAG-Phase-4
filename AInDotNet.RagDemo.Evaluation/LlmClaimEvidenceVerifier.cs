@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
@@ -12,8 +12,11 @@ public sealed class LlmClaimEvidenceVerifier : IClaimEvidenceVerifier
 {
     private readonly IChatClient _chatClient;
 
-    public LlmClaimEvidenceVerifier(IChatClient chatClient)
+    private readonly Action<string>? _writeDiagnostic;
+
+    public LlmClaimEvidenceVerifier(IChatClient chatClient, Action<string>? writeDiagnostic = null)
     {
+        _writeDiagnostic = writeDiagnostic;
         _chatClient = chatClient;
     }
 
@@ -260,11 +263,11 @@ public sealed class LlmClaimEvidenceVerifier : IClaimEvidenceVerifier
         var labels = root.GetProperty("supportingSourceLabels").EnumerateArray().Select(item => item.GetString()!).ToList();
 
         string? explanation = root.GetProperty("explanation").GetString();
-        Console.WriteLine($"EVIDENCE CLAIM: {claim}");
-        Console.WriteLine($"EVIDENCE SCOPE: {evidenceScope}");
-        Console.WriteLine($"EVIDENCE OUTCOME: {outcome}");
-        Console.WriteLine($"EVIDENCE SOURCES: {string.Join(", ", labels)}");
-        Console.WriteLine($"EVIDENCE EXPLANATION: {explanation}");
+        _writeDiagnostic?.Invoke($"EVIDENCE CLAIM: {claim}");
+        _writeDiagnostic?.Invoke($"EVIDENCE SCOPE: {evidenceScope}");
+        _writeDiagnostic?.Invoke($"EVIDENCE OUTCOME: {outcome}");
+        _writeDiagnostic?.Invoke($"EVIDENCE SOURCES: {string.Join(", ", labels)}");
+        _writeDiagnostic?.Invoke($"EVIDENCE EXPLANATION: {explanation}");
 
         var validLabels = sources.Select(source => source.Label).ToHashSet(StringComparer.Ordinal);
 

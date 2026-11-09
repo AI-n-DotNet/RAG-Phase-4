@@ -9,6 +9,7 @@ using AInDotNet.RagDemo.Evaluation;
 namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 [TestClass]
+[TestCategory("Deterministic")]
 public sealed class CitationVerifierTests
 {
     [TestMethod]

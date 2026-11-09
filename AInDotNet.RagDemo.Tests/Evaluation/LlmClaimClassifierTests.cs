@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Evaluation;
+using AInDotNet.RagDemo.Evaluation;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +12,8 @@ using System.Text;
 namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 [TestClass]
+[TestCategory("LiveEvaluation")]
+[TestCategory("ExternalDependency")]
 public sealed class LlmClaimClassifierTests : IDisposable
 {
     private readonly IHost host;

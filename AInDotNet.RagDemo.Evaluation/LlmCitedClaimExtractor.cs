@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using AInDotNet.RagDemo.Evaluation;
 using Microsoft.Extensions.AI;
 
@@ -96,6 +97,8 @@ public sealed class LlmCitedClaimExtractor : ICitedClaimExtractor
                 if (string.IsNullOrWhiteSpace(claim))
                     throw new JsonException("Claim is empty.");
 
+                originalText = RestoreOriginalWhitespace(answer, originalText);
+
                 var labels = item.GetProperty("citationLabels").EnumerateArray().Select(x => x.GetString() ?? throw new JsonException("Citation label is null.")).ToList();
 
                 results.Add(new CitedClaim
@@ -147,5 +150,23 @@ public sealed class LlmCitedClaimExtractor : ICitedClaimExtractor
         {
             throw new InvalidOperationException("Cited claim extraction returned invalid JSON.", ex);
         }
+    }
+
+    private static string RestoreOriginalWhitespace(string answer, string originalText)
+    {
+        if (string.IsNullOrWhiteSpace(originalText) ||
+            answer.Contains(originalText, StringComparison.Ordinal))
+        {
+            return originalText;
+        }
+
+        // Accept only whitespace differences, then retain the actual answer span.
+        string pattern = string.Join(
+            @"\s+", Regex.Split(originalText, @"\s+").Select(Regex.Escape));
+        var matches = Regex.Matches(
+            answer, pattern, RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
+
+        // Ambiguous matches remain invalid and are rejected by provenance validation.
+        return matches.Count == 1 ? matches[0].Value : originalText;
     }
 }

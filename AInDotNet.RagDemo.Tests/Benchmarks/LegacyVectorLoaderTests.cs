@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.BenchmarkData.Models;
+using AInDotNet.RagDemo.BenchmarkData.Models;
 using AInDotNet.RagDemo.Benchmarks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +10,11 @@ using System.Text.Json;
 namespace AInDotNet.RagDemo.Tests.Benchmarks;
 
 [TestClass]
+[TestCategory("DatabaseIntegration")]
+[TestCategory("ExternalDependency")]
 [TestCategory("Integration")]
+// These tests insert into and scan the same table inside rollback transactions.
+[DoNotParallelize]
 public sealed class LegacyVectorLoaderTests
 {
     [TestMethod]

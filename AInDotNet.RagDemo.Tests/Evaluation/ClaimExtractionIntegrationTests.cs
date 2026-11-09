@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Application.Retrieval;
 using AInDotNet.RagDemo.Data.Models;
 using AInDotNet.RagDemo.Evaluation;
@@ -20,6 +20,8 @@ namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 
 [TestClass]
+[TestCategory("LiveEvaluation")]
+[TestCategory("ExternalDependency")]
 public class ClaimExtractionIntegrationTests
 {
     public TestContext TestContext { get; set; } = null!;

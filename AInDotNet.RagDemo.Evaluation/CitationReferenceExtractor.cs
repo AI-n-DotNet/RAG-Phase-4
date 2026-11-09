@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,5 +20,16 @@ public static class CitationReferenceExtractor
                     .Split(',', StringSplitOptions.TrimEntries))
             .Distinct(StringComparer.Ordinal)
             .ToList();
+    }
+
+    public static string RemoveMarkers(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        if (!CitationPattern.IsMatch(text))
+            return text;
+
+        string withoutMarkers = CitationPattern.Replace(text, string.Empty);
+        return Regex.Replace(withoutMarkers, @"[ \t]+(?=[.,;:!?])", string.Empty).Trim();
     }
 }

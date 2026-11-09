@@ -6,6 +6,7 @@ using System.Text;
 namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 [TestClass]
+[TestCategory("Deterministic")]
 public sealed class LlmCitedClaimExtractorTests
 {
     [TestMethod]
@@ -181,5 +182,70 @@ public sealed class LlmCitedClaimExtractorTests
 
         StringAssert.StartsWith(exception.Message,
             "Cited claim extraction returned citations that do not match the original text.");
+    }
+
+    [TestMethod]
+    public async Task ExtractAsync_CollapsedLineBreak_RestoresOriginalAnswerText()
+    {
+        const string original = "The retrieved sources do not establish which controls\n" +
+            "are implemented in our demonstration application.";
+        const string answer = "Enterprise RAG requires authorization [S1].\n" + original;
+        string response = System.Text.Json.JsonSerializer.Serialize(new[]
+        {
+            new
+            {
+                claim = "The retrieved sources do not establish which controls are implemented in our demonstration application.",
+                citationLabels = Array.Empty<string>(),
+                originalText = original.Replace("\n", " ")
+            }
+        });
+        var extractor = new LlmCitedClaimExtractor(new FakeChatClient(response));
+
+        var claims = await extractor.ExtractAsync(answer);
+
+        Assert.AreEqual(1, claims.Count);
+        Assert.AreEqual(original, claims[0].OriginalText);
+        Assert.IsTrue(answer.Contains(claims[0].OriginalText!, StringComparison.Ordinal));
+        Assert.AreEqual(0, claims[0].CitationLabels.Count);
+    }
+
+    [TestMethod]
+    public async Task ExtractAsync_ChangedWordsAcrossLineBreak_ThrowsException()
+    {
+        const string answer = "The sources do not confirm\nimplementation.";
+        const string response = """
+        [{
+            "claim": "The sources confirm implementation.",
+            "citationLabels": [],
+            "originalText": "The sources confirm implementation."
+        }]
+        """;
+        var extractor = new LlmCitedClaimExtractor(new FakeChatClient(response));
+
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => extractor.ExtractAsync(answer));
+
+        StringAssert.StartsWith(exception.Message,
+            "Cited claim extraction returned original text not found in the answer.");
+    }
+
+    [TestMethod]
+    public async Task ExtractAsync_AmbiguousWhitespaceMatch_ThrowsException()
+    {
+        const string answer = "Authorization is\nrequired.\nAuthorization is  required.";
+        const string response = """
+        [{
+            "claim": "Authorization is required.",
+            "citationLabels": [],
+            "originalText": "Authorization is required."
+        }]
+        """;
+        var extractor = new LlmCitedClaimExtractor(new FakeChatClient(response));
+
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => extractor.ExtractAsync(answer));
+
+        StringAssert.StartsWith(exception.Message,
+            "Cited claim extraction returned original text not found in the answer.");
     }
 }

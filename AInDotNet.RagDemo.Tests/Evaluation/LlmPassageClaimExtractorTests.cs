@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Evaluation;
+using AInDotNet.RagDemo.Evaluation;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +11,8 @@ using System.Text;
 namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 [TestClass]
+[TestCategory("LiveEvaluation")]
+[TestCategory("ExternalDependency")]
 public sealed class LlmPassageClaimExtractorTests
 {
     private readonly IChatClient _chatClient;
@@ -97,5 +99,36 @@ public sealed class LlmPassageClaimExtractorTests
         }
 
         Assert.AreEqual(1, claims.Count);
+    }
+
+    [TestMethod]
+    [TestCategory("Integration")]
+    public async Task ExtractAsync_ImpersonalReporting_DoesNotInventSourceAttribution()
+    {
+        const string original =
+            "While it is noted that enterprise RAG systems must enforce authorization " +
+            "among other controls [S1], there is no explicit information about which " +
+            "authorization mechanisms your demonstration application uses.";
+        IReadOnlyList<CitedPassage> passages =
+        [
+            new(PassageId: 1, OriginalText: original, CitationLabels: ["S1"])
+        ];
+        var extractor = new LlmPassageClaimExtractor(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(_chatClient, Console.WriteLine);
+
+        var claims = await extractor.ExtractAsync(passages);
+
+        Assert.IsTrue(claims.Count > 0, "The passage contains substantive assertions.");
+
+        foreach (var claim in claims)
+        {
+            Assert.AreEqual(1, claim.PassageId);
+            Console.WriteLine($"EXTRACTED CLAIM: {claim.Claim}");
+
+            var outcome = await verifier.VerifyAsync(claim.Claim, original, original);
+
+            Assert.AreEqual(ClaimEntailmentOutcome.Entailed, outcome,
+                $"The extracted claim must preserve the passage's reporting form: {claim.Claim}");
+        }
     }
 }

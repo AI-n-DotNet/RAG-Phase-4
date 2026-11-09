@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Evaluation;
+using AInDotNet.RagDemo.Evaluation;
 using AInDotNet.RagDemo.Tests.Evaluation;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 
 [TestClass]
+[TestCategory("Deterministic")]
 public sealed class RetrievalEvaluatorTests
 {
     [TestMethod]

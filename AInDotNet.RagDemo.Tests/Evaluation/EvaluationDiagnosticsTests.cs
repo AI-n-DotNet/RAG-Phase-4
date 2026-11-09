@@ -5,6 +5,7 @@ namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 // Console.Out is process-wide; do not redirect it alongside parallel tests.
 [TestClass]
+[TestCategory("Deterministic")]
 [DoNotParallelize]
 public sealed class EvaluationDiagnosticsTests
 {
@@ -41,8 +42,10 @@ public sealed class EvaluationDiagnosticsTests
             var entailment = new LlmClaimEntailmentVerifier(new FakeChatClient(
                 """
                 {
+                    "sourceAttributionRequired": false,
                     "passageAttribution": null,
                     "claimAttribution": null,
+                    "supportingSegment": "Enterprise RAG requires authorization [S1].",
                     "outcome": "Entailed",
                     "explanation": "The segment states the claim."
                 }

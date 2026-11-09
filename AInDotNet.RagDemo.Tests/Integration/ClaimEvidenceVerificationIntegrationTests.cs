@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Generation;
@@ -13,6 +13,8 @@ using OpenAI;
 namespace AInDotNet.RagDemo.Tests.Integration;
 
 [TestClass]
+[TestCategory("LiveEvaluation")]
+[TestCategory("ExternalDependency")]
 [TestCategory("Integration")]
 public sealed class ClaimEvidenceVerificationIntegrationTests
 {

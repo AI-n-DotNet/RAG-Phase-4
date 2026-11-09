@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.ExpressData.Models;
@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 namespace AInDotNet.RagDemo.Tests.Benchmarks;
 
 [TestClass]
+[TestCategory("DatabaseIntegration")]
+[TestCategory("ExternalDependency")]
 [TestCategory("Integration")]
 public sealed class ExpressConnectionTests
 {

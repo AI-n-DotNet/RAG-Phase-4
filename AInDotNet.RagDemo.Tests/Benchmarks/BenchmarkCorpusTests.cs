@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Benchmarks;
+using AInDotNet.RagDemo.Benchmarks;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,6 +6,7 @@ using System.Text;
 namespace AInDotNet.RagDemo.Tests.Benchmarks;
 
 [TestClass]
+[TestCategory("Deterministic")]
 public sealed class BenchmarkCorpusTests
 {
     [TestMethod]

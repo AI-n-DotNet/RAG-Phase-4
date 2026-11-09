@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Ingestion;
+using AInDotNet.RagDemo.Application.Ingestion;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +7,7 @@ namespace AInDotNet.RagDemo.Tests.Ingestion;
 
 
 [TestClass]
+[TestCategory("Deterministic")]
 public sealed class TextFileDocumentTests
 {
     [TestMethod]

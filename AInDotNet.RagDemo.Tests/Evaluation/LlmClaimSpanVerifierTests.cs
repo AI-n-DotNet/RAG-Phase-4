@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Application.Retrieval;
 using AInDotNet.RagDemo.Data.Models;
 using AInDotNet.RagDemo.Evaluation;
@@ -19,22 +19,28 @@ namespace AInDotNet.RagDemo.Tests.Evaluation;
 [TestClass]
 public sealed class LlmClaimSpanVerifierTests
 {
-    private readonly IChatClient _chatClient;
+    private readonly Lazy<IChatClient> _liveClient = new(CreateLiveClient);
+    private IChatClient ChatClient => _liveClient.Value;
 
-
-    public LlmClaimSpanVerifierTests()
+    private static IChatClient CreateLiveClient()
     {
-        var builder = Host.CreateApplicationBuilder();
-        builder.Configuration.AddUserSecrets<LlmClaimSpanVerifierTests>();
-        string apiKey = builder.Configuration["OpenAI:ApiKey"] ?? throw new InvalidOperationException("OpenAI API key is missing.");
-        string chatModel = builder.Configuration["OpenAI:ChatModel"] ?? "gpt-4.1-mini";
-        builder.Services.AddSingleton<IChatClient>(_ => new OpenAIClient(apiKey).GetChatClient(chatModel).AsIChatClient());
-        using var host = builder.Build();
-        using var scope = host.Services.CreateScope();
-        _chatClient = host.Services.GetRequiredService<IChatClient>();
+        var configuration = new ConfigurationBuilder()
+            .AddUserSecrets<LlmClaimSpanVerifierTests>()
+            .Build();
+        string apiKey = configuration["OpenAI:ApiKey"]
+            ?? throw new InvalidOperationException("OpenAI API key is missing.");
+        string model = configuration["OpenAI:ChatModel"] ?? "gpt-4.1-mini";
+        return new OpenAIClient(apiKey).GetChatClient(model).AsIChatClient();
     }
 
+    [TestCleanup]
+    public void DisposeLiveClient()
+    {
+        if (_liveClient.IsValueCreated)
+            _liveClient.Value.Dispose();
+    }
 
+    [TestCategory("Deterministic")]
     [TestMethod]
     public async Task VerifyAsync_SupportedClaim_ReturnsTrue()
     {
@@ -52,6 +58,7 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.IsTrue(result);
     }
 
+    [TestCategory("Deterministic")]
     [TestMethod]
     public async Task VerifyAsync_UnsupportedClaim_ReturnsFalse()
     {
@@ -69,6 +76,7 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.IsFalse(result);
     }
 
+    [TestCategory("Deterministic")]
     [TestMethod]
     public async Task VerifyAsync_InvalidResponse_ThrowsException()
     {
@@ -85,6 +93,8 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual("Unexpected claim-span verification response: MAYBE", exception.Message);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_EvidenceAbsence_DoesNotEstablishImplementationAbsence()
     {
@@ -92,13 +102,15 @@ public sealed class LlmClaimSpanVerifierTests
 
         const string claim = "The application does not implement authorization controls.";
 
-        var verifier = new LlmClaimSpanVerifier(_chatClient);
+        var verifier = new LlmClaimSpanVerifier(ChatClient);
 
         bool supported = await verifier.VerifyAsync(claim, originalText);
 
         Assert.IsFalse(supported);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_UnconfirmedImplementation_DoesNotEstablishNonImplementation()
     {
@@ -107,13 +119,15 @@ public sealed class LlmClaimSpanVerifierTests
 
         const string claim = "OAuth 2.0 is not implemented in the RAG demo application.";
 
-        var verifier = new LlmClaimSpanVerifier(_chatClient);
+        var verifier = new LlmClaimSpanVerifier(ChatClient);
 
         bool supported = await verifier.VerifyAsync(claim, originalText);
 
         Assert.IsFalse(supported);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_AmbiguousApplicationStatus_RejectsNonImplementation()
     {
@@ -122,13 +136,15 @@ public sealed class LlmClaimSpanVerifierTests
 
         const string claim = "OAuth 2.0 is not implemented in the RAG demo application.";
 
-        var verifier = new LlmClaimSpanVerifier(_chatClient);
+        var verifier = new LlmClaimSpanVerifier(ChatClient);
 
         bool supported = await verifier.VerifyAsync(claim, originalText);
 
         Assert.IsFalse(supported);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_AmbiguousOAuthImplementation_ReturnsNotEstablished()
     {
@@ -136,7 +152,7 @@ public sealed class LlmClaimSpanVerifierTests
 
         const string claim = "OAuth 2.0 is not implemented in the RAG demo application.";
 
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient);
 
         ClaimEntailmentOutcome outcome = await verifier.VerifyAsync(claim, originalText);
 
@@ -145,6 +161,8 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.NotEstablished, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_ExplicitAuthorizationRequirement_ReturnsEntailed()
     {
@@ -152,7 +170,7 @@ public sealed class LlmClaimSpanVerifierTests
 
         const string claim = "Enterprise RAG systems must enforce authorization.";
 
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient);
 
         ClaimEntailmentOutcome outcome = await verifier.VerifyAsync(claim, originalText);
 
@@ -161,6 +179,8 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.Entailed, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_ExplicitAuthorizationRequirement_ReturnsContradicted()
     {
@@ -168,7 +188,7 @@ public sealed class LlmClaimSpanVerifierTests
 
         const string claim = "Enterprise RAG systems do not need to enforce authorization.";
 
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient);
 
         ClaimEntailmentOutcome outcome = await verifier.VerifyAsync(claim, originalText);
 
@@ -177,6 +197,8 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.Contradicted, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task IsSupportedAsync_AmbiguousOAuthImplementation_ReturnsFalse()
     {
@@ -184,13 +206,15 @@ public sealed class LlmClaimSpanVerifierTests
 
         const string claim = "OAuth 2.0 is not implemented in the RAG demo application.";
 
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient);
 
         bool supported = await verifier.IsSupportedAsync(claim, originalText);
 
         Assert.IsFalse(supported);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_EntailmentAdapter_AmbiguousOAuth_ReturnsFalse()
     {
@@ -198,7 +222,7 @@ public sealed class LlmClaimSpanVerifierTests
 
         const string claim = "OAuth 2.0 is not implemented in the RAG demo application.";
 
-        IClaimEntailmentVerifier entailmentVerifier = new LlmClaimEntailmentVerifier(_chatClient);
+        IClaimEntailmentVerifier entailmentVerifier = new LlmClaimEntailmentVerifier(ChatClient);
 
         IClaimSpanVerifier verifier = new ClaimEntailmentSpanVerifierAdapter(entailmentVerifier);
 
@@ -207,11 +231,13 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.IsFalse(supported);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_ImplicitSubjectWithFullContext_ReturnsTrue()
     {
         // Arrange
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient);
 
         string originalText = "The sources recommend authorization controls [S1], " + "but do not confirm their implementation.";
 
@@ -224,12 +250,14 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.Entailed, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_UnrelatedClaimFromOtherClause_ReturnsNotEstablished()
     {
         // Arrange
 
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient);
 
         string originalText = "The sources recommend authorization controls [S1], " + "but do not confirm their implementation.";
 
@@ -242,12 +270,14 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.NotEstablished, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_ClaimFromDifferentSegment_ReturnsNotEstablished()
     {
         // Arrange
 
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient, Console.WriteLine);
 
         string contextText = "The sources recommend authorization controls [S1], " + "but do not confirm their implementation.";
 
@@ -262,11 +292,13 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.NotEstablished, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     public async Task VerifyAsync_ImplicitSubjectInAssignedSegment_ReturnsEntailed()
     {
         // Arrange
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient, Console.WriteLine);
 
         string contextText = "The sources recommend authorization controls [S1], " + "but do not confirm their implementation.";
 
@@ -281,11 +313,13 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.Entailed, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     [TestCategory("Integration")]
     public async Task VerifyAsync_AttributedOAuthClaim_PreservesSourceAttribution()
     {
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient, Console.WriteLine);
 
         const string passage = "While the sources mention that enterprise RAG systems must " + "enforce authorization and that OAuth 2.0 provides a framework " + "for delegated authorization, they do not confirm that these " + "controls are implemented in the demonstration application " + "itself [S1, S5].";
 
@@ -298,11 +332,13 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.Entailed, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     [TestCategory("Integration")]
     public async Task VerifyAsync_UnattributedOAuthClaim_ReportsOutcome()
     {
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient, Console.WriteLine);
 
         const string passage = "While the sources mention that enterprise RAG systems must " + "enforce authorization and that OAuth 2.0 provides a framework " + "for delegated authorization, they do not confirm that these " + "controls are implemented in the demonstration application " + "itself [S1, S5].";
 
@@ -315,11 +351,13 @@ public sealed class LlmClaimSpanVerifierTests
         Assert.AreEqual(ClaimEntailmentOutcome.NotEstablished, outcome);
     }
 
+    [TestCategory("LiveEvaluation")]
+    [TestCategory("ExternalDependency")]
     [TestMethod]
     [TestCategory("Integration")]
     public async Task VerifyAsync_RecommendationInConcessiveClause_ReturnsEntailed()
     {
-        var verifier = new LlmClaimEntailmentVerifier(_chatClient);
+        var verifier = new LlmClaimEntailmentVerifier(ChatClient, Console.WriteLine);
 
         const string passage = "While it is recommended that enterprise RAG systems enforce " + "authorization among other controls, the sources do not confirm " + "any actual implementation of authorization controls in your " + "application [S1].";
 

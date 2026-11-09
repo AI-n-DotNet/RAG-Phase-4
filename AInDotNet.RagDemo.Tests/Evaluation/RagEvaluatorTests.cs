@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Evaluation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -9,6 +9,7 @@ namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 
 [TestClass]
+[TestCategory("Deterministic")]
 public sealed class RagEvaluatorTests
 {
     [TestMethod]

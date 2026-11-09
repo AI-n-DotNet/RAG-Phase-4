@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Data.SqlTypes;
@@ -15,6 +15,8 @@ namespace AInDotNet.RagDemo.Tests.Performance;
 
 
 [TestClass]
+[TestCategory("DatabaseIntegration")]
+[TestCategory("ExternalDependency")]
 [TestCategory("Performance")]
 [DoNotParallelize]
 public sealed class SqlRetrievalPerformanceTests

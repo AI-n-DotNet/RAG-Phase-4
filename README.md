@@ -161,14 +161,23 @@ The `ingest` and `ask` commands bypass demonstration seeding. Running without ar
 
 ## 6. Run the tests
 
-Open **Test → Test Explorer** in Visual Studio.
+Open **Test → Test Explorer** in Visual Studio and group tests by **Traits**.
 
-- Run an individual test while making a focused change.
-- Run the full suite at a checkpoint.
+- **Deterministic:** repeatable regression tests using fakes or local files; no SQL Server or OpenAI credentials.
+- **LiveEvaluation:** live model and retrieval quality checks; failures remain visible and are reported separately.
+- **DatabaseIntegration:** database checks, some of which also use OpenAI embeddings.
+- **Performance:** explicitly selected performance measurements.
 
-**Recorded development checkpoint: 155 tests passed.** This is a reported run, not a guarantee that every environment or subsequent live-model run will produce the same result.
+See [testing workflows](doc/Testing.md) for category definitions, filtered commands,
+dependencies and result interpretation. **Run All still executes every test.**
 
-Some tests use fakes; others call OpenAI, and some also require SQL Server. Tests are configured for method-level parallel execution, so combined test durations can exceed elapsed suite time.
+**Latest complete run before categorization: 212 tests, 209 passed and 3 failed.**
+The failures were live extraction, model judgment and bounded-repair quality checks.
+They remain unresolved quality findings; a passing deterministic subset does not
+mean the entire suite passed.
+
+Tests use method-level parallel execution, with selected shared-resource tests
+marked nonparallel. Combined test durations can exceed elapsed suite time.
 
 ### Fresh-database verification
 

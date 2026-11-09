@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Ingestion;
@@ -15,6 +15,8 @@ namespace AInDotNet.RagDemo.Tests.Integration;
 
 
 [TestClass]
+[TestCategory("DatabaseIntegration")]
+[TestCategory("ExternalDependency")]
 [TestCategory("Integration")]
 public sealed class DocumentIngestionIntegrationTests
 {

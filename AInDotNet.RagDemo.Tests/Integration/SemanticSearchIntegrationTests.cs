@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Retrieval;
@@ -16,6 +16,9 @@ namespace AInDotNet.RagDemo.Tests.Integration;
 
 
 [TestClass]
+[TestCategory("LiveEvaluation")]
+[TestCategory("DatabaseIntegration")]
+[TestCategory("ExternalDependency")]
 [TestCategory("Integration")]
 public sealed class SemanticSearchIntegrationTests
 {

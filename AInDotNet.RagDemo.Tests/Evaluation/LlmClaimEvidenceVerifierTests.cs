@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Evaluation;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +14,8 @@ namespace AInDotNet.RagDemo.Tests.Evaluation;
 
 
 [TestClass]
+[TestCategory("LiveEvaluation")]
+[TestCategory("ExternalDependency")]
 public sealed class LlmClaimEvidenceVerifierTests
 {
     [TestMethod]

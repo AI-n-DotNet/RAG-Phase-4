@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Evaluation;
+using AInDotNet.RagDemo.Application.Evaluation;
 using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Application.Retrieval;
 using AInDotNet.RagDemo.Data.Models;
@@ -18,6 +18,9 @@ namespace AInDotNet.RagDemo.Tests.Integration;
 
 
 [TestClass]
+[TestCategory("LiveEvaluation")]
+[TestCategory("DatabaseIntegration")]
+[TestCategory("ExternalDependency")]
 [TestCategory("Integration")]
 public sealed class RagAnswerIntegrationTests
 {
@@ -56,9 +59,13 @@ public sealed class RagAnswerIntegrationTests
 
         builder.Services.AddTransient<IPassageClaimExtractor, LlmPassageClaimExtractor>();
 
-        builder.Services.AddTransient<ICitedClaimExtractor, PassageBasedCitedClaimExtractor>();
+        builder.Services.AddTransient<ICitedClaimExtractor>(services =>
+            new PassageBasedCitedClaimExtractor(
+                services.GetRequiredService<IPassageClaimExtractor>(), Console.WriteLine));
 
-        builder.Services.AddTransient<IClaimEntailmentVerifier, LlmClaimEntailmentVerifier>();
+        builder.Services.AddTransient<IClaimEntailmentVerifier>(services =>
+            new LlmClaimEntailmentVerifier(
+                services.GetRequiredService<IChatClient>(), Console.WriteLine));
 
         builder.Services.AddTransient<IClaimSpanVerifier, ClaimEntailmentSpanVerifierAdapter>();
 
@@ -66,7 +73,16 @@ public sealed class RagAnswerIntegrationTests
 
         builder.Services.AddTransient<IClaimClassifier, LlmClaimClassifier>();
 
-        builder.Services.AddTransient<ICitationVerifier, CitationVerifier>();
+        builder.Services.AddTransient<ICitedClaimRepairer, LlmCitedClaimRepairer>();
+
+        builder.Services.AddTransient<ICitationVerifier>(services =>
+            new CitationVerifier(
+                services.GetRequiredService<ICitedClaimExtractor>(),
+                services.GetRequiredService<CitedClaimSemanticValidator>(),
+                services.GetRequiredService<IClaimEvidenceVerifier>(),
+                services.GetRequiredService<IClaimClassifier>(),
+                Console.WriteLine,
+                claimRepairer: services.GetRequiredService<ICitedClaimRepairer>()));
 
         builder.Services.AddTransient<IRagEvaluator, RagEvaluator>();
 
@@ -105,6 +121,7 @@ public sealed class RagAnswerIntegrationTests
 
         var ragEvaluator = scope.ServiceProvider.GetRequiredService<IRagEvaluator>();
 
+        Console.WriteLine($"ANSWER BEFORE EVALUATION: {evaluationRun.Answer}");
         var evaluationResult = await ragEvaluator.EvaluateAsync(evaluationRun);
 
         var faithfulnessResult = evaluationResult.Faithfulness;

@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +7,7 @@ namespace AInDotNet.RagDemo.Tests.Generation;
 
 
 [TestClass]
+[TestCategory("Deterministic")]
 public sealed class CitationProcessorTests
 {
     private static readonly RagSource[] Sources =

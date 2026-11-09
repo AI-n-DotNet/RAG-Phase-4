@@ -1,4 +1,4 @@
-﻿using AInDotNet.RagDemo.Application.Generation;
+using AInDotNet.RagDemo.Application.Generation;
 using AInDotNet.RagDemo.Evaluation;
 using AInDotNet.RagDemo.Tests.Evaluation;
 using Microsoft.Extensions.AI;
@@ -14,6 +14,8 @@ using System.Text;
 namespace AInDotNet.RagDemo.Tests.Integration;
 
 [TestClass]
+[TestCategory("LiveEvaluation")]
+[TestCategory("ExternalDependency")]
 [TestCategory("Integration")]
 public sealed class ClaimExtractionIntegrationTests : IDisposable
 {

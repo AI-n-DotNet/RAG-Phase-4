@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AInDotNet.RagDemo.Application.Generation;
@@ -9,6 +9,7 @@ namespace AInDotNet.RagDemo.Tests.Generation;
 
 
 [TestClass]
+[TestCategory("Deterministic")]
 public sealed class RagAnswerServiceTests
 {
     [TestMethod]

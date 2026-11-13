@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
@@ -61,6 +61,27 @@ public sealed class LlmClaimExtractor : IClaimExtractor
                 "No source explicitly confirms which authorization controls are implemented."
 
                 These express the same underlying evidence limitation.
+
+                This includes repeated statements about the same application and
+                the same controls such as:
+                "The retrieved sources do not establish which, if any, authorization
+                controls are currently implemented in the demonstration application."
+                "No source explicitly confirms the actual implementation of authorization
+                controls in that demonstration application."
+                When both describe the same missing implementation evidence, return
+                one evidence-limitation claim, preserving the fuller "which, if any"
+                qualification. Do not count "not established" and "not explicitly
+                confirmed" as separate facts merely because their wording differs.
+                If an architectural recommendation occurs between them, keep the
+                recommendation separately; it does not make the repeated evidence
+                limitation distinct.
+
+                Deduplicate only when the target fact, source collection, application,
+                and time scope are the same. Do not merge limitations about different
+                controls, applications, time periods, or independently different facts.
+                Before returning, compare the candidate evidence limitations against
+                one another and remove semantic repetitions. Do not replace lack of
+                implementation evidence with an assertion of nonimplementation.
                 Return only one claim.
 
                 Do not merge an architectural requirement with an  evidence-limitation claim. They are independently verifiable.

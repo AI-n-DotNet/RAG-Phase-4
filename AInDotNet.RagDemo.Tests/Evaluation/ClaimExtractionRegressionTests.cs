@@ -166,6 +166,58 @@ public sealed class ClaimExtractionRegressionTests
         CollectionAssert.AreEqual(new[] { "S1" }, rejected.CitationLabels.ToArray());
     }
 
+    // Captured from the requirement-commentary failure; no generated answer or repair.
+    private const string RequirementCommentaryAnswer =
+        "The retrieved sources do not establish whether any authorization controls are currently implemented in your RAG demonstration application. " +
+        "While one source states that enterprise RAG systems must enforce authorization, data classification, source attribution, and auditing, it is a security requirement rather than confirmation of implementation [S1]. " +
+        "Another source references OAuth 2.0 as a framework for delegated authorization generally but does not specify its use in your RAG application [S5]. " +
+        "No source explicitly confirms which, if any, authorization controls have actually been implemented in your demonstration application.";
+
+    private const string RequirementCommentaryClaim =
+        "The statement that enterprise RAG systems must enforce authorization, data classification, source attribution, and auditing is a security requirement rather than confirmation of implementation.";
+
+    [TestCategory("Deterministic")]
+    [TestMethod]
+    public void RecordedRequirementCommentary_PreservesPassageAndSourceOwnership()
+    {
+        var passages = CitedPassageExtractor.Extract(RequirementCommentaryAnswer);
+        var passage = passages.Single(p => p.OriginalText.StartsWith("While one source"));
+        var claim = PassageClaimResolver.Resolve(
+            new PassageClaim(RequirementCommentaryClaim, passage.PassageId), passages);
+
+        Assert.AreEqual(passage.OriginalText, claim.OriginalText);
+        Assert.AreEqual(passage.ContextText, claim.ContextText);
+        CollectionAssert.AreEqual(new[] { "S1" }, claim.CitationLabels.ToArray());
+        Assert.AreEqual(RequirementCommentaryClaim, claim.Claim);
+    }
+
+    [TestCategory("ExternalDependency")]
+    [TestCategory("LiveEvaluation")]
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public async Task RecordedRequirementCommentary_LiveJudge_DistinguishesRequirementFromImplementation(
+        bool claimsImplementation)
+    {
+        using IChatClient client = CreateLiveClient();
+        var passages = CitedPassageExtractor.Extract(RequirementCommentaryAnswer);
+        var passage = passages.Single(p => p.OriginalText.StartsWith("While one source"));
+        string claim = claimsImplementation
+            ? "Authorization, data classification, source attribution, and auditing are implemented in the demonstration application."
+            : RequirementCommentaryClaim;
+        Console.WriteLine($"FIXED CLAIM: {claim}");
+        Console.WriteLine($"FIXED ASSIGNED PASSAGE: {passage.OriginalText}");
+        var judge = new LlmClaimEntailmentVerifier(client, Console.WriteLine);
+
+        var outcome = await judge.VerifyAsync(
+            claim, passage.OriginalText, passage.ContextText ?? passage.OriginalText);
+
+        Assert.AreEqual(
+            claimsImplementation ? ClaimEntailmentOutcome.NotEstablished : ClaimEntailmentOutcome.Entailed,
+            outcome,
+            "Requirement commentary must remain distinct from confirmation of implementation.");
+    }
+
     private static IChatClient CreateLiveClient()
     {
         var configuration = new ConfigurationBuilder()

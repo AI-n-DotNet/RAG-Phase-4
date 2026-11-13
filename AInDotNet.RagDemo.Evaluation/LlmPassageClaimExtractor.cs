@@ -40,6 +40,28 @@ public sealed class LlmPassageClaimExtractor : IPassageClaimExtractor
                 - Preserve meaning, qualifications, negation, uncertainty, and evidence scope.
 
                 - Preserve explicit source attribution when splitting compound assertions.
+                - A reporting subject and verb are part of the assertion, not disposable
+                  introductory wording. Keep "they indicate that", "one source states
+                  that", or "the sources mention that" on each assertion they govern.
+                - Removing "While" is permitted; removing "they indicate that" is not.
+                  Do not replace that phrase with "It is indicated that" or an
+                  unattributed statement. Keep the original reporting subject and verb.
+                - Worked example:
+                  Input passage 2:
+                  "While they indicate that enterprise RAG systems must enforce
+                  authorization controls among other security measures [S1], there is
+                  no explicit evidence describing the implementation status of such
+                  controls in your demonstration."
+                  Output:
+                  [
+                    {"claim": "They indicate that enterprise RAG systems must enforce authorization controls among other security measures.", "passageId": 2},
+                    {"claim": "There is no explicit evidence describing the implementation status of such controls in your demonstration.", "passageId": 2}
+                  ]
+                  The second clause is an impersonal evidence limitation; do not
+                  add "they indicate" to that separate assertion.
+                - Before returning, check every split claim against its assigned
+                  passage: retain its governing reporting subject and verb, but do
+                  not copy a reporting frame onto a clause it does not govern.
                 - Do not introduce source attribution absent from the assigned passage.
                 - A citation marker identifies a citation; it does not authorize rewriting an impersonal statement as "the sources mention" or "the documentation states".
                 - Preserve impersonal reporting forms such as "it is noted that", "it is recommended that", and "is described as"; do not invent who noted, recommended, or described the assertion.

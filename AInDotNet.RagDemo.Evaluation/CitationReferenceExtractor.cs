@@ -8,16 +8,15 @@ namespace AInDotNet.RagDemo.Evaluation;
 
 public static class CitationReferenceExtractor
 {
-    private static readonly Regex CitationPattern = new(        @"\[S\d+(?:\s*,\s*S\d+)*\]",        RegexOptions.Compiled);
+    private static readonly Regex CitationPattern = new(@"\[(?:(?i:Source)[ \t]+)?S\d+(?:\s*,\s*(?:(?i:Source)[ \t]+)?S\d+)*\]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    private static readonly Regex LabelPattern = new(@"S\d+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     public static IReadOnlyList<string> Extract(string answer)
     {
         ArgumentNullException.ThrowIfNull(answer);
 
         return CitationPattern.Matches(answer)
-            .SelectMany(match =>
-                match.Value.Trim('[', ']')
-                    .Split(',', StringSplitOptions.TrimEntries))
+            .SelectMany(match => LabelPattern.Matches(match.Value).Select(label => label.Value))
             .Distinct(StringComparer.Ordinal)
             .ToList();
     }

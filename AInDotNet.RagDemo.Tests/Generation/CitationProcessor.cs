@@ -123,4 +123,24 @@ public sealed class CitationProcessorTests
         // Both valid sources must be returned.
         Assert.AreEqual(2, result.Sources.Count);
     }
+    [TestMethod]
+    public void Process_SourcePrefixedMarkers_NormalizesAndRetainsSources()
+    {
+        var result = CitationProcessor.Process(
+            "Authorization [Source S1]. OAuth [Source S2].", Sources);
+
+        Assert.AreEqual("Authorization [S1]. OAuth [S2].", result.Answer);
+        CollectionAssert.AreEqual(new[] { "S1", "S2" },
+            result.Sources.Select(source => source.Label).ToArray());
+    }
+
+    [TestMethod]
+    public void Process_SourcePrefixedMixedUnknownLabels_KeepsOnlyKnownSources()
+    {
+        var result = CitationProcessor.Process(
+            "Authorization [Source S1, Source S99].", Sources);
+
+        Assert.AreEqual("Authorization [S1].", result.Answer);
+        Assert.AreEqual("S1", result.Sources.Single().Label);
+    }
 }

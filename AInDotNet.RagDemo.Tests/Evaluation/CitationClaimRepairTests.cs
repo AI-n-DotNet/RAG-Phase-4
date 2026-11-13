@@ -25,7 +25,7 @@ public sealed class CitationClaimRepairTests
     public async Task VerifyAsync_RejectedClaim_RepairsOnceAndPreservesMetadata()
     {
         var valid = Claim("Valid assertion.");
-        var rejected = Claim("Authorization is enforced.");
+        var rejected = Claim("Authorization is required.");
         var spans = new SequenceSpanVerifier(true, false, true);
         var repairer = new RecordingRepairer(["They indicate that authorization is required."]);
         var diagnostics = new List<string>();
@@ -68,7 +68,7 @@ public sealed class CitationClaimRepairTests
     public async Task VerifyAsync_MultipleRejectedClaims_UsesOneBatchRepair()
     {
         var spans = new SequenceSpanVerifier(false, false, true, true);
-        var repairer = new RecordingRepairer(["First repaired.", "Second repaired."]);
+        var repairer = new RecordingRepairer(["They indicate first invalid.", "They indicate second invalid."]);
         var verifier = CreateVerifier(
             [Claim("First invalid."), Claim("Second invalid.")], spans, repairer);
 
@@ -78,7 +78,7 @@ public sealed class CitationClaimRepairTests
         Assert.AreEqual(2, repairer.ReceivedClaims.Count);
         Assert.AreEqual(4, spans.Calls.Count);
         CollectionAssert.AreEqual(
-            new[] { "First repaired.", "Second repaired." },
+            new[] { "They indicate first invalid.", "They indicate second invalid." },
             result.Citations.Select(citation => citation.Claim).ToArray());
     }
 
@@ -156,6 +156,98 @@ public sealed class CitationClaimRepairTests
             exception.Message);
         Assert.AreEqual(1, repairer.Calls);
         Assert.AreEqual(1, spans.Calls.Count);
+    }
+
+    [TestMethod]
+    public async Task VerifyAsync_RepairDropsRecordedPurposeClause_RejectsBeforeRevalidation()
+    {
+        const string original =
+            "Enterprise RAG systems must enforce authorization controls, among other security measures, to ensure that access to documents is properly controlled and that documents are not accessible solely based on semantic relevance.";
+        var spans = new SequenceSpanVerifier(false);
+        var repairer = new RecordingRepairer(
+            ["The retrieved sources state that enterprise RAG systems must enforce authorization controls, among other security measures."]);
+        var verifier = CreateVerifier([Claim(original)], spans, repairer);
+
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => verifier.VerifyAsync(Run()));
+
+        StringAssert.StartsWith(exception.Message,
+            "Claim repair removed or reordered original claim content;");
+        Assert.AreEqual(1, repairer.Calls);
+        Assert.AreEqual(1, spans.Calls.Count);
+    }
+
+    [TestMethod]
+    public async Task VerifyAsync_RepairPreservesEntirePurposeClause_AcceptsAfterValidation()
+    {
+        const string original =
+            "Enterprise RAG systems must enforce authorization controls to ensure access is controlled and documents are not accessible solely based on semantic relevance.";
+        const string repaired =
+            "The retrieved sources state that enterprise RAG systems must enforce authorization controls to ensure access is controlled and documents are not accessible solely based on semantic relevance.";
+        var spans = new SequenceSpanVerifier(false, true);
+        var repairer = new RecordingRepairer([repaired]);
+        var verifier = CreateVerifier([Claim(original)], spans, repairer);
+
+        var result = await verifier.VerifyAsync(Run());
+
+        Assert.AreEqual(repaired, result.Citations.Single().Claim);
+        Assert.AreEqual(1, repairer.Calls);
+        Assert.AreEqual(2, spans.Calls.Count);
+    }
+
+    [TestMethod]
+    [DataRow("Authorization is not confirmed.", "The sources state that authorization is confirmed.")]
+    [DataRow("Authorization is required if access is restricted.", "The sources state that authorization is required.")]
+    [DataRow("Authorization and auditing are required.", "The sources state that authorization is required.")]
+    public async Task VerifyAsync_RepairDropsClaimContent_Rejects(
+        string original, string repaired)
+    {
+        var spans = new SequenceSpanVerifier(false);
+        var repairer = new RecordingRepairer([repaired]);
+        var verifier = CreateVerifier([Claim(original)], spans, repairer);
+
+        var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => verifier.VerifyAsync(Run()));
+
+        StringAssert.StartsWith(exception.Message,
+            "Claim repair removed or reordered original claim content;");
+        Assert.AreEqual(1, repairer.Calls);
+        Assert.AreEqual(1, spans.Calls.Count);
+    }
+
+    [TestMethod]
+    [DataRow("It is mentioned that authorization is required to ensure access is controlled.",
+        "They mention that authorization is required to ensure access is controlled.", true)]
+    [DataRow("It is not confirmed that authorization controls are implemented.",
+        "They do not confirm that authorization controls are implemented.", true)]
+    [DataRow("It is mentioned that authorization is required to ensure access is controlled.",
+        "They mention that authorization is required.", false)]
+    [DataRow("It is not confirmed that authorization controls are implemented.",
+        "They confirm that authorization controls are implemented.", false)]
+    [DataRow("It is mentioned that authorization and auditing are required.",
+        "They mention that authorization is required.", false)]
+    public async Task VerifyAsync_ReplaceImpersonalFrame_PreservesBodyAndReportingNegation(
+        string original, string repaired, bool expected)
+    {
+        var spans = new SequenceSpanVerifier(false, true);
+        var repairer = new RecordingRepairer([repaired]);
+        var verifier = CreateVerifier([Claim(original)], spans, repairer);
+
+        if (expected)
+        {
+            var result = await verifier.VerifyAsync(Run());
+            Assert.AreEqual(repaired, result.Citations.Single().Claim);
+        }
+        else
+        {
+            var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+                () => verifier.VerifyAsync(Run()));
+            StringAssert.StartsWith(exception.Message,
+                "Claim repair removed or reordered original claim content;");
+        }
+
+        Assert.AreEqual(1, repairer.Calls);
+        Assert.AreEqual(expected ? 2 : 1, spans.Calls.Count);
     }
 
     private static CitedClaim Claim(string text) => new()

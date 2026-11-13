@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -7,7 +7,7 @@ namespace AInDotNet.RagDemo.Application.Generation;
 
 public static class CitationProcessor
 {
-    private static readonly Regex CitationPattern = new(@"\[(?:S\d+)(?:\s*,\s*S\d+)*\]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    private static readonly Regex CitationPattern = new(@"\[(?:(?i:Source)[ \t]+)?S\d+(?:\s*,\s*(?:(?i:Source)[ \t]+)?S\d+)*\]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     private static readonly Regex LabelPattern = new(@"S\d+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 

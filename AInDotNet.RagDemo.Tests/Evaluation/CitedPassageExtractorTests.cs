@@ -302,4 +302,17 @@ public sealed class CitedPassageExtractorTests
 
         Assert.AreEqual(passages[0].ContextText, passages[1].ContextText);
     }
+    [TestMethod]
+    public void Extract_SourcePrefixedMarkers_PreservePassageOwnership()
+    {
+        const string answer =
+            "Authorization is required [Source S1]. OAuth is described [Source S5].";
+        var passages = CitedPassageExtractor.Extract(answer);
+
+        Assert.AreEqual(2, passages.Count);
+        CollectionAssert.AreEqual(new[] { "S1" }, passages[0].CitationLabels.ToArray());
+        CollectionAssert.AreEqual(new[] { "S5" }, passages[1].CitationLabels.ToArray());
+        Assert.AreEqual("Authorization is required [Source S1].", passages[0].OriginalText);
+        Assert.AreEqual("OAuth is described [Source S5].", passages[1].OriginalText);
+    }
 }

@@ -323,7 +323,7 @@ public sealed class ClaimExtractionIntegrationTests : IDisposable
     }
 
     [TestMethod]
-    public async Task ExtractClaimsAsync_MixedEvidenceAndRequirement_ExtractsThreeClaims()
+    public async Task ExtractAndNormalizeAsync_MixedEvidenceAndRequirement_DeduplicatesEquivalentEvidenceLimitations()
     {
         // Arrange
         IChatClient chatClient = host.Services.GetRequiredService<IChatClient>();
@@ -351,8 +351,33 @@ public sealed class ClaimExtractionIntegrationTests : IDisposable
             Console.WriteLine($"CLAIM: {claim}");
         }
 
+        // Match FaithfulnessEvaluator: normalization owns semantic deduplication.
+        var normalizer = new LlmClaimNormalizer(chatClient);
+        var rawClaims = claims;
+        claims = await normalizer.NormalizeAsync(
+            rawClaims.Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
+        Console.WriteLine($"Normalized claims: {claims.Count}");
+        foreach (string claim in claims)
+            Console.WriteLine($"NORMALIZED CLAIM: {claim}");
+
+        Assert.IsTrue(claims.All(claim => rawClaims.Contains(claim, StringComparer.Ordinal)),
+            "Normalization must select existing claims without rewriting them.");
+
         // Assert
-        //Assert.AreEqual(2, claims.Count, "Expected one architectural requirement claim and one deduplicated evidence-limitation claim.");
-        Assert.AreEqual(3, claims.Count, "Expected an architectural requirement and two distinct evidence-limitation claims.");
+        Assert.AreEqual(2, claims.Count,
+            "Expected one architectural requirement and one deduplicated evidence limitation.");
+        Assert.IsTrue(claims.Any(claim =>
+            claim.Contains("authorization", StringComparison.OrdinalIgnoreCase) &&
+            (claim.Contains("recommend", StringComparison.OrdinalIgnoreCase) ||
+             claim.Contains("must enforce", StringComparison.OrdinalIgnoreCase))),
+            "Deduplication must retain the architectural requirement.");
+        Assert.IsTrue(claims.Any(claim =>
+            claim.Contains("implement", StringComparison.OrdinalIgnoreCase) &&
+            (claim.Contains("do not establish", StringComparison.OrdinalIgnoreCase) ||
+             claim.Contains("does not establish", StringComparison.OrdinalIgnoreCase) ||
+             claim.Contains("no source", StringComparison.OrdinalIgnoreCase) ||
+             claim.Contains("not confirm", StringComparison.OrdinalIgnoreCase) ||
+             claim.Contains("cannot confirm", StringComparison.OrdinalIgnoreCase))),
+            "Deduplication must retain the implementation-evidence limitation.");
     }
 }

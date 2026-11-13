@@ -75,5 +75,23 @@ public sealed class LlmClaimNormalizerTests
         Assert.AreEqual(claims[0], normalized[0]);
         Assert.AreEqual(claims[2], normalized[1]);
     }
+    [TestMethod]
+    public async Task NormalizeAsync_RecordedEvidenceDuplicates_PreservesRequirementAndExistingLimitation()
+    {
+        string[] claims =
+        [
+            "The retrieved sources do not establish which, if any, authorization controls are currently implemented in your RAG demonstration application.",
+            "One source recommends that enterprise RAG systems must enforce authorization.",
+            "No source explicitly confirms the actual implementation of authorization controls in the specific RAG demonstration application."
+        ];
+        var normalizer = new LlmClaimNormalizer(new FakeChatClient(
+            JsonSerializer.Serialize(new[] { claims[0], claims[1] })));
+
+        var normalized = await normalizer.NormalizeAsync(claims);
+
+        CollectionAssert.AreEqual(new[] { claims[0], claims[1] }, normalized.ToArray());
+        // This replay checks response handling, not live semantic deduplication.
+        // The extraction-plus-normalization live test assesses that model decision.
+    }
 }
 

@@ -55,6 +55,21 @@ public sealed class LlmCitedClaimRepairer : ICitedClaimRepairer
                 Repair only the assertion attempted by that rejected claim.
                 Do not substitute a different, easier-to-support assertion.
                 Preserve its meaning, modality, negation, uncertainty and evidence scope.
+                Retain all assertion-body words in their original order. A leading
+                impersonal reporting frame may be replaced with the actual source:
+                "It is mentioned that authorization is required" may become
+                "They mention that authorization is required" when the passage
+                identifies "They" as that source. Preserve reporting negation:
+                "It is not confirmed that A" must not become "They confirm A".
+                Otherwise only insert missing attribution or qualifications.
+
+                Preserve all purpose clauses, conditions, examples and coordinated parts.
+                For example, do not shorten "Authorization is required to ensure access
+                is controlled and documents are not accessible solely by relevance" to
+                "The sources state that authorization is required." Retain the entire
+                purpose clause and add the source attribution.
+                If faithful repair requires deleting or replacing assertion-body words,
+                return null rather than weaken the attempted assertion.
                 Preserve source attribution and reporting forms, including pronouns
                 such as "they indicate" and impersonal forms such as "it is noted".
                 Do not invent an identified source for an impersonal assertion.

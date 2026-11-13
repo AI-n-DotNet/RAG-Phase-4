@@ -131,4 +131,42 @@ public sealed class LlmPassageClaimExtractorTests
                 $"The extracted claim must preserve the passage's reporting form: {claim.Claim}");
         }
     }
+    [TestMethod]
+    public async Task ExtractAsync_ExplicitReporting_PreservesOriginalSubjectAndVerb()
+    {
+        const string original =
+            "While they indicate that enterprise RAG systems must enforce authorization " +
+            "controls among other security measures [S1], there is no explicit evidence " +
+            "describing the implementation status of such controls in your demonstration.";
+        IReadOnlyList<CitedPassage> passages =
+        [
+            new(PassageId: 2, OriginalText: original, CitationLabels: ["S1"])
+        ];
+        var extractor = new LlmPassageClaimExtractor(_chatClient);
+
+        var claims = await extractor.ExtractAsync(passages);
+
+        foreach (var claim in claims)
+        {
+            Console.WriteLine($"EXTRACTED CLAIM: {claim.Claim}");
+            Assert.AreEqual(2, claim.PassageId);
+            Assert.AreEqual(0, CitationReferenceExtractor.Extract(claim.Claim).Count);
+        }
+
+        var requirementClaims = claims.Where(claim =>
+            claim.Claim.Contains("must enforce authorization", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        Assert.IsTrue(requirementClaims.Length > 0, "Do not omit the reported requirement.");
+        foreach (var claim in requirementClaims)
+        {
+            Assert.IsTrue(
+                claim.Claim.StartsWith("They indicate that ", StringComparison.OrdinalIgnoreCase) ||
+                claim.Claim.StartsWith("While they indicate that ", StringComparison.OrdinalIgnoreCase),
+                $"Retain the original reporting subject and verb: {claim.Claim}");
+        }
+
+        Assert.IsTrue(claims.Any(claim =>
+            claim.Claim.Contains("no explicit evidence", StringComparison.OrdinalIgnoreCase)),
+            "Do not omit the separate evidence limitation.");
+    }
 }

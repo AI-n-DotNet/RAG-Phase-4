@@ -170,6 +170,7 @@ public sealed class CitationVerifier : ICitationVerifier
                 throw new InvalidOperationException("Claim repair returned no assertion.");
 
             var original = rejectedClaims[index];
+            _writeDiagnostic?.Invoke($"REPAIR CANDIDATE: {claimText}");
             if (string.Equals(
                 NormalizeClaimForComparison(original.Claim),
                 NormalizeClaimForComparison(claimText),
@@ -178,6 +179,13 @@ public sealed class CitationVerifier : ICitationVerifier
                 throw new InvalidOperationException(
                     "Claim repair returned the rejected claim unchanged; no further attempt is allowed.");
             }
+            if (!RetainsClaimWords(original.Claim, claimText))
+            {
+                throw new InvalidOperationException(
+                    "Claim repair removed or reordered original claim content; no further attempt is allowed. " +
+                    $"Original extraction: {original.Claim} | Repair candidate: {claimText}");
+            }
+
             var repaired = new CitedClaim
             {
                 Claim = claimText,
@@ -199,6 +207,40 @@ public sealed class CitationVerifier : ICitationVerifier
 
         // Classification and metrics run only after every claim has passed validation.
         return claims;
+    }
+
+    private static bool RetainsClaimWords(string original, string repaired)
+    {
+        // Only a leading impersonal reporting frame may be replaced. Keep all
+        // assertion words (including purpose/condition clauses) in their order.
+        // Preserve reporting negation as well; semantic validation checks its scope.
+        string content = CitationReferenceExtractor.RemoveMarkers(original);
+        var frame = System.Text.RegularExpressions.Regex.Match(content,
+            @"^\s*It\s+(?:is|was|has\s+been|had\s+been)\s+(?<negative>not\s+)?(?:stated|reported|noted|recommended|mentioned|said|indicated|suggested|claimed|confirmed|specified|established)\s+that\s+(?<body>.+)$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase |
+            System.Text.RegularExpressions.RegexOptions.CultureInvariant |
+            System.Text.RegularExpressions.RegexOptions.Singleline);
+        if (frame.Success)
+        {
+            content = (frame.Groups["negative"].Success ? "not " : "") +
+                frame.Groups["body"].Value;
+        }
+
+        const string wordPattern = @"[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*";
+        var originalWords = System.Text.RegularExpressions.Regex.Matches(
+            content, wordPattern);
+        var repairedWords = System.Text.RegularExpressions.Regex.Matches(
+            CitationReferenceExtractor.RemoveMarkers(repaired), wordPattern);
+        int next = 0;
+        foreach (System.Text.RegularExpressions.Match word in repairedWords)
+        {
+            if (next < originalWords.Count &&
+                string.Equals(originalWords[next].Value, word.Value,
+                    StringComparison.OrdinalIgnoreCase))
+                next++;
+        }
+
+        return next == originalWords.Count;
     }
 
     private static string NormalizeClaimForComparison(string text) =>

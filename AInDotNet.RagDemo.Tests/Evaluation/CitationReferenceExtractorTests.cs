@@ -48,4 +48,28 @@ public sealed class CitationReferenceExtractorTests
 
         Assert.AreEqual(0, labels.Count);
     }
+    [TestMethod]
+    [DataRow("[Source S1][Source S5]")]
+    [DataRow("[Source S1, S5]")]
+    [DataRow("[Source S1, Source S5]")]
+    [DataRow("[S1, Source S5]")]
+    [DataRow("[source S1][SOURCE S5]")]
+    public void Extract_SourcePrefixedMarkers_ReturnCanonicalLabels(string markers)
+    {
+        CollectionAssert.AreEqual(new[] { "S1", "S5" },
+            CitationReferenceExtractor.Extract("Requirements " + markers).ToArray());
+        Assert.AreEqual("Requirements.",
+            CitationReferenceExtractor.RemoveMarkers("Requirements " + markers + "."));
+    }
+
+    [TestMethod]
+    [DataRow("Source S1")]
+    [DataRow("[Source S1 text]")]
+    [DataRow("[Source S]")]
+    [DataRow("[RBAC]")]
+    public void Extract_ProseOrInvalidBracketText_IsNotCitation(string text)
+    {
+        Assert.AreEqual(0, CitationReferenceExtractor.Extract(text).Count);
+        Assert.AreEqual(text, CitationReferenceExtractor.RemoveMarkers(text));
+    }
 }

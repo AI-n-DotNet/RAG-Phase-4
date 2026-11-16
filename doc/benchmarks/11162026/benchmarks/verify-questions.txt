@@ -1,0 +1,11 @@
+PASS: authorization-v1; five IDs and scores agree.
+PASS: backups-v1; five IDs and scores agree.
+PASS: ingestion-v1; five IDs and scores agree.
+PASS: inventory-v1; five IDs and scores agree.
+PASS: invoices-v1; five IDs and scores agree.
+PASS: incidents-v1; five IDs and scores agree.
+PASS: onboarding-v1; five IDs and scores agree.
+PASS: deployment-v1; five IDs and scores agree.
+PASS: maintenance-v1; five IDs and scores agree.
+PASS: support-v1; five IDs and scores agree.
+Verified 10 questions.

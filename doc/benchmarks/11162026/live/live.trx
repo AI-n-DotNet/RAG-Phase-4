@@ -1,0 +1,1049 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="8dc977f6-d10e-4341-aee1-62d26176e4a6" name="micro@KBALDWINOCT2025 2026-11-16 12:16:37" runUser="KBALDWINOCT2025\micro" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-16T12:16:37.0911552-05:00" queuing="2026-11-16T12:16:37.0911553-05:00" start="2026-11-16T12:16:34.2868766-05:00" finish="2026-11-16T12:16:54.9436467-05:00" />
+  <TestSettings name="default" id="58922cc5-f16b-4e59-abeb-789427b5ab6a">
+    <Deployment runDeploymentRoot="micro_KBALDWINOCT2025_2026-11-16_12_16_37" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="85d3bf3b-ed34-4f72-82de-f493825666ff" testId="1bbc0448-4908-8511-96e6-6ebb0386c803" testName="RecordedDroppedAttribution_LiveRepair_PreservesSourceOwnership" computerName="KBALDWINOCT2025" duration="00:00:03.9163579" startTime="2026-11-16T12:16:34.7232114-05:00" endTime="2026-11-16T12:16:38.6396595-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85d3bf3b-ed34-4f72-82de-f493825666ff">
+      <Output>
+        <StdOut>REJECTED CLAIM: Enterprise RAG systems must enforce authorization controls among other security measures.&#xD;
+ORIGINAL PASSAGE: While they indicate that enterprise RAG systems must enforce authorization controls among other security measures [S1], there is no explicit evidence describing the implementation status of such controls in your demonstration.&#xD;
+CLAIM REPAIR ATTEMPT: 1; rejected claims: 1&#xD;
+REPAIR CANDIDATE: They indicate that enterprise RAG systems must enforce authorization controls among other security measures.&#xD;
+REPAIRED CLAIM: They indicate that enterprise RAG systems must enforce authorization controls among other security measures.&#xD;
+SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: they&#xD;
+CLAIM SOURCE SUBJECT: They&#xD;
+SAME SOURCE SUBJECT: True&#xD;
+SUPPORTING SEGMENT: While they indicate that enterprise RAG systems must enforce authorization controls among other security measures&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The extracted claim exactly matches the assertion within the assigned segment, including the attribution to 'they'. The claim correctly preserves the source attribution and does not add or remove any qualifications or modality. Therefore, it is entailed by the assigned segment.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a000ef3e-d589-4dd9-93e3-12ca8d43f632" testId="1081011a-7daa-8d91-9464-10c52f759078" testName="SearchAsync_AuthorizationQuestion_EvaluatesRetrieval" computerName="KBALDWINOCT2025" duration="00:00:02.4223092" startTime="2026-11-16T12:16:34.5592096-05:00" endTime="2026-11-16T12:16:37.0064860-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a000ef3e-d589-4dd9-93e3-12ca8d43f632">
+      <Output>
+        <StdOut>info: Microsoft.EntityFrameworkCore.Database.Command[20101]&#xD;
+      Executed DbCommand (20ms) [Parameters=[@queryVector='?' (Size = 6152) (DbType = Binary), @p='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']&#xD;
+      SELECT [d1].[Id], [d1].[DocumentId], [d0].[Title] AS [DocumentTitle], [d1].[Content], VECTOR_DISTANCE('cosine', [d1].[Embedding], @queryVector) AS [Distance]&#xD;
+      FROM (&#xD;
+          SELECT TOP(@p) [d].[Id], [d].[Content], [d].[DocumentId], [d].[Embedding], VECTOR_DISTANCE('cosine', [d].[Embedding], @queryVector) AS [c]&#xD;
+          FROM [DocumentChunks] AS [d]&#xD;
+          ORDER BY VECTOR_DISTANCE('cosine', [d].[Embedding], @queryVector)&#xD;
+      ) AS [d1]&#xD;
+      INNER JOIN [Documents] AS [d0] ON [d1].[DocumentId] = [d0].[Id]&#xD;
+      ORDER BY [d1].[c]&#xD;
+Evaluation: RAG-SECURITY-001&#xD;
+Question: How does enterprise RAG prevent unauthorized access?&#xD;
+&#xD;
+Rank 1: Chunk 69, Distance 0.373208, Enterprise RAG Architecture&#xD;
+Rank 2: Chunk 65, Distance 0.460650, Enterprise RAG Architecture&#xD;
+Rank 3: Chunk 64, Distance 0.500633, Enterprise RAG Architecture&#xD;
+Rank 4: Chunk 44, Distance 0.599442, Retrieval Augmented Generation&#xD;
+Rank 5: Chunk 51, Distance 0.644292, Role Based Access Control&#xD;
+&#xD;
+Precision@5: 0.2000&#xD;
+Recall@5: 1.0000&#xD;
+Reciprocal Rank: 1.0000</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c849743c-08a9-49a9-a168-11635184c25c" testId="1ecf8843-b14b-8078-981c-e0dade491b87" testName="VerifyAsync_ImplicitSubjectInAssignedSegment_ReturnsEntailed" computerName="KBALDWINOCT2025" duration="00:00:01.5395068" startTime="2026-11-16T12:16:38.5050904-05:00" endTime="2026-11-16T12:16:40.0446362-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c849743c-08a9-49a9-a168-11635184c25c">
+      <Output>
+        <StdOut>SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: The sources&#xD;
+CLAIM SOURCE SUBJECT: The sources&#xD;
+SAME SOURCE SUBJECT: True&#xD;
+SUPPORTING SEGMENT: but do not confirm their implementation.&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The claim 'The sources do not confirm implementation of authorization controls.' directly reflects the assertion in the assigned segment 'but do not confirm their implementation.' when 'their' is resolved to 'authorization controls' from the surrounding context. The source attribution 'The sources' is present in both, matching the requirement.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bd116c4c-65e1-4a1c-a291-9a4ea06ef825" testId="1b4e6230-c96a-869f-bc2d-54ab0aef4b50" testName="EvaluateAsync_UnsupportedAnswer_ReturnsZeroFaithfulnessAndCitationAccuracy" computerName="KBALDWINOCT2025" duration="00:00:06.7973353" startTime="2026-11-16T12:16:34.5636793-05:00" endTime="2026-11-16T12:16:41.3808651-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd116c4c-65e1-4a1c-a291-9a4ea06ef825">
+      <Output>
+        <StdOut>Total claims: 1&#xD;
+Supported claims: 0&#xD;
+Faithfulness score: 0</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d720fb31-8f0b-4862-9a70-8c524c021cf4" testId="10f23392-93e3-8f81-9a1a-5c86f9662687" testName="ExtractAndNormalizeAsync_MixedEvidenceAndRequirement_DeduplicatesEquivalentEvidenceLimitations" computerName="KBALDWINOCT2025" duration="00:00:03.7105608" startTime="2026-11-16T12:16:34.5591887-05:00" endTime="2026-11-16T12:16:38.2940744-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d720fb31-8f0b-4862-9a70-8c524c021cf4">
+      <Output>
+        <StdOut>Extracted claims: 3&#xD;
+CLAIM: The retrieved sources do not establish which, if any, authorization controls are currently implemented in the RAG demonstration application.&#xD;
+CLAIM: One source recommends that enterprise RAG systems must enforce authorization among other controls.&#xD;
+CLAIM: No source explicitly confirms the actual implementation of authorization controls in the specific RAG demonstration application.&#xD;
+Normalized claims: 2&#xD;
+NORMALIZED CLAIM: The retrieved sources do not establish which, if any, authorization controls are currently implemented in the RAG demonstration application.&#xD;
+NORMALIZED CLAIM: One source recommends that enterprise RAG systems must enforce authorization among other controls.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5fe273fd-89bc-4164-9327-c7df60ddc830" testId="11b10bff-0bcc-8dd1-9635-a37799bd3869" testName="PassageClaimExtraction_ValidPassages_ReturnsCorrectIds" computerName="KBALDWINOCT2025" duration="00:00:02.5420700" startTime="2026-11-16T12:16:34.5660954-05:00" endTime="2026-11-16T12:16:37.1255385-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5fe273fd-89bc-4164-9327-c7df60ddc830">
+      <Output>
+        <StdOut>Passage 1: The retrieved sources do not identify implemented authorization controls.&#xD;
+Passage 2: Enterprise RAG systems must enforce authorization.&#xD;
+&#xD;
+RESOLVED CITATION:&#xD;
+Claim: Enterprise RAG systems must enforce authorization.&#xD;
+Original text: Enterprise RAG systems must enforce authorization [S1].&#xD;
+Citation labels: S1</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="55b9e16b-dd3a-41bb-baaa-946b4c734519" testId="18cdcf2a-5d5b-8fae-a42c-203f0f871f5f" testName="IsSupportedAsync_AmbiguousOAuthImplementation_ReturnsFalse" computerName="KBALDWINOCT2025" duration="00:00:00.5018070" startTime="2026-11-16T12:16:38.0480438-05:00" endTime="2026-11-16T12:16:38.5498783-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55b9e16b-dd3a-41bb-baaa-946b4c734519" />
+    <UnitTestResult executionId="44514841-c59c-434d-be00-36e191cde33e" testId="112cd378-fb94-8cec-bcf1-0f5d7d678226" testName="VerifyAsync_RecommendationInConcessiveClause_ReturnsEntailed" computerName="KBALDWINOCT2025" duration="00:00:01.4758847" startTime="2026-11-16T12:16:38.5499123-05:00" endTime="2026-11-16T12:16:40.0258493-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="44514841-c59c-434d-be00-36e191cde33e">
+      <Output>
+        <StdOut>SOURCE ATTRIBUTION REQUIRED: False&#xD;
+PASSAGE SOURCE SUBJECT: &#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: While it is recommended that enterprise RAG systems enforce authorization among other controls&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The assigned segment states that it is recommended that enterprise RAG systems enforce authorization among other controls. The claim repeats this recommendation without adding or removing source attribution, so it is entailed.&#xD;
+Entailment outcome: Entailed</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5fd70646-37fe-4d29-9173-a469b3338505" testId="12e5427b-4104-8efa-af38-619b96bd2b50" testName="ClassifyAsync_MissingImplementation_ReturnsFactual" computerName="KBALDWINOCT2025" duration="00:00:00.6280525" startTime="2026-11-16T12:16:37.0804733-05:00" endTime="2026-11-16T12:16:37.7085610-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5fd70646-37fe-4d29-9173-a469b3338505" />
+    <UnitTestResult executionId="0cceeb7c-c198-4366-a069-eaa4e2a71d1a" testId="1edb7895-dbc3-81cf-90e7-3a6b15e36337" testName="VerifyAsync_MixedCitations_ReturnsFiftyPercentAccuracy" computerName="KBALDWINOCT2025" duration="00:00:04.7673630" startTime="2026-11-16T12:16:34.5638341-05:00" endTime="2026-11-16T12:16:39.3508649-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0cceeb7c-c198-4366-a069-eaa4e2a71d1a" />
+    <UnitTestResult executionId="ea0a5e97-4526-43c5-8063-b31aac6ddaaf" testId="1af00d3b-fccd-89dc-bc11-7d2495597317" testName="PassageClaimExtraction_MultipleCitedAssertions_MapsCorrectCitations" computerName="KBALDWINOCT2025" duration="00:00:02.7579814" startTime="2026-11-16T12:16:34.5664499-05:00" endTime="2026-11-16T12:16:37.3414878-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea0a5e97-4526-43c5-8063-b31aac6ddaaf">
+      <Output>
+        <StdOut>Claim: Enterprise RAG requires authorization.&#xD;
+Citations: S1&#xD;
+Original: Enterprise RAG requires authorization [S1]&#xD;
+&#xD;
+Claim: Enterprise RAG supports auditing.&#xD;
+Citations: S2, S3&#xD;
+Original: and supports auditing [S2, S3].</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="89b05b11-f383-4780-b362-8bcaca41869d" testId="165c50c8-239d-88d8-bef0-cbf80244e2f2" testName="ExtractAsync_RetrievedEvidenceAbsence_PreservesScope" computerName="KBALDWINOCT2025" duration="00:00:01.5888560" startTime="2026-11-16T12:16:38.5762126-05:00" endTime="2026-11-16T12:16:40.1651488-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89b05b11-f383-4780-b362-8bcaca41869d">
+      <Output>
+        <StdOut>EXTRACTED CLAIM: The retrieved sources provide no indication that authorization controls are actively implemented in the demonstration application.&#xD;
+CLAIM TYPE: CollectionEvidence</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2124b7eb-4049-4fc1-91e6-ebf01c86feb3" testId="196e144b-26c8-8c13-a869-7e29fe0243ad" testName="VerifyAsync_InvalidClaimSpan_ReturnsFalse" computerName="KBALDWINOCT2025" duration="00:00:02.2745951" startTime="2026-11-16T12:16:34.5642343-05:00" endTime="2026-11-16T12:16:36.8604732-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2124b7eb-4049-4fc1-91e6-ebf01c86feb3" />
+    <UnitTestResult executionId="17843793-4985-49e8-8e95-b215f7eb165d" testId="11a50682-51b9-8d34-9c70-cba11b301032" testName="RecordedRequirementCommentary_LiveJudge_DistinguishesRequirementFromImplementation (False)" computerName="KBALDWINOCT2025" duration="00:00:01.7963644" startTime="2026-11-16T12:16:36.8645588-05:00" endTime="2026-11-16T12:16:38.6626996-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17843793-4985-49e8-8e95-b215f7eb165d">
+      <Output>
+        <StdOut>FIXED CLAIM: The statement that enterprise RAG systems must enforce authorization, data classification, source attribution, and auditing is a security requirement rather than confirmation of implementation.&#xD;
+FIXED ASSIGNED PASSAGE: While one source states that enterprise RAG systems must enforce authorization, data classification, source attribution, and auditing, it is a security requirement rather than confirmation of implementation [S1].&#xD;
+SOURCE ATTRIBUTION REQUIRED: False&#xD;
+PASSAGE SOURCE SUBJECT: &#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: it is a security requirement rather than confirmation of implementation&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The claim paraphrases the narrator's characterization of the statement as reported in the assigned segment, which says 'it is a security requirement rather than confirmation of implementation.' This characterization is presented as the narrator's commentary, not attributed to the source; therefore, no source attribution is required for the claim. The claim is fully supported by the assigned segment.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0b53a309-1f41-407a-a7f2-0cac53631d63" testId="182480bb-727f-8511-b8f1-20cd7abc7584" testName="PassageClaimExtraction_UncitedClaim_PreservesMissingCitation" computerName="KBALDWINOCT2025" duration="00:00:02.4934067" startTime="2026-11-16T12:16:34.5592044-05:00" endTime="2026-11-16T12:16:37.0768717-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b53a309-1f41-407a-a7f2-0cac53631d63">
+      <Output>
+        <StdOut>Claim: Enterprise RAG requires authorization.&#xD;
+Citations: S1&#xD;
+Original: Enterprise RAG requires authorization [S1].&#xD;
+&#xD;
+Claim: The application encrypts all documents.&#xD;
+Citations: &#xD;
+Original: The application encrypts all documents.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a7ed10dc-483e-484a-b57c-4f4df82264d6" testId="170efa1b-0686-8bca-a01a-8df2d2d5bb91" testName="FixedAnswer_LiveExtraction_PreservesClaimProvenance" computerName="KBALDWINOCT2025" duration="00:00:08.5112025" startTime="2026-11-16T12:16:34.5592180-05:00" endTime="2026-11-16T12:16:43.0947425-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7ed10dc-483e-484a-b57c-4f4df82264d6">
+      <Output>
+        <StdOut>PASSAGE 1: The retrieved sources do not provide information about the specific authorization controls currently implemented in your RAG demonstration application.&#xD;
+CITATIONS: &#xD;
+PASSAGE 2: While they indicate that enterprise RAG systems must enforce authorization controls among other security measures [S1], there is no explicit evidence describing the implementation status of such controls in your demonstration.&#xD;
+CITATIONS: S1&#xD;
+PASSAGE 3: Therefore, it cannot be determined from the provided sources whether authorization controls are currently implemented in your RAG demonstration application.&#xD;
+CITATIONS: &#xD;
+PASSAGE 1 CLAIM: The retrieved sources do not provide information about the specific authorization controls currently implemented in your RAG demonstration application.&#xD;
+PASSAGE 2 CLAIM: They indicate that enterprise RAG systems must enforce authorization controls among other security measures.&#xD;
+PASSAGE 2 CLAIM: There is no explicit evidence describing the implementation status of such controls in your demonstration.&#xD;
+PASSAGE 3 CLAIM: It cannot be determined from the provided sources whether authorization controls are currently implemented in your RAG demonstration application.&#xD;
+Claim copies the complete assigned segment.&#xD;
+SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: they&#xD;
+CLAIM SOURCE SUBJECT: They&#xD;
+SAME SOURCE SUBJECT: True&#xD;
+SUPPORTING SEGMENT: While they indicate that enterprise RAG systems must enforce authorization controls among other security measures&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The assigned segment explicitly states that 'they indicate that enterprise RAG systems must enforce authorization controls among other security measures,' which is the exact assertion in the claim. The subject 'they' is preserved and attributed in both the segment and the claim, thus the claim is entailed.&#xD;
+SOURCE ATTRIBUTION REQUIRED: False&#xD;
+PASSAGE SOURCE SUBJECT: &#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: there is no explicit evidence describing the implementation status of such controls in your demonstration.&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The claim is directly quoted from the assigned segment, preserving the assertion exactly. There is no named source for this specific assertion, so source attribution is not required.&#xD;
+SOURCE ATTRIBUTION REQUIRED: False&#xD;
+PASSAGE SOURCE SUBJECT: &#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: Therefore, it cannot be determined from the provided sources whether authorization controls are currently implemented in your RAG demonstration application.&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The claim is an exact restatement of the assertion in the assigned segment without adding or removing attribution or changing modality. Both are impersonal statements without a specific source attribution, preserving the original uncertainty.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3d4f3dbb-a129-4c74-84f1-7fbb900981dc" testId="1ce8dc08-11be-8c09-8374-0dd4cfd61054" testName="VerifyAsync_ReferenceCases_MatchExpectedOutcomes" computerName="KBALDWINOCT2025" duration="00:00:12.7289717" startTime="2026-11-16T12:16:37.0066484-05:00" endTime="2026-11-16T12:16:49.7357054-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d4f3dbb-a129-4c74-84f1-7fbb900981dc">
+      <Output>
+        <StdOut>CLAIM-001: Expected=Supported, Actual=Supported, Match=True&#xD;
+Explanation: Source S1 explicitly states that enterprise RAG systems must enforce authorization.&#xD;
+SupportingSourceLabels: S1&#xD;
+&#xD;
+CLAIM-002: Expected=InsufficientEvidence, Actual=InsufficientEvidence, Match=True&#xD;
+Explanation: Source S1 states that enterprise RAG systems must enforce authorization, but it does not specify whether the RAG demonstration application currently enforces document-level authorization.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM-003: Expected=Contradicted, Actual=Contradicted, Match=True&#xD;
+Explanation: Source S1 explicitly states that the RAG demonstration application does not implement document-level authorization.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM-004: Expected=Supported, Actual=Supported, Match=True&#xD;
+Explanation: Source S1 explicitly states that OAuth 2.0 provides a framework for delegated authorization to protected resources, directly supporting the claim.&#xD;
+SupportingSourceLabels: S1&#xD;
+&#xD;
+CLAIM-005: Expected=InsufficientEvidence, Actual=InsufficientEvidence, Match=True&#xD;
+Explanation: The supplied passage does not mention the use of JWT claims to filter retrieved documents. It only provides a general statement about OAuth 2.0 and delegated authorization, which is insufficient to establish the claim.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM-006: Expected=Supported, Actual=Supported, Match=True&#xD;
+Explanation: The sole passage in the complete retrieved set states that authorization must be enforced but does not specify which authorization controls are implemented, thus supporting the claim that the passages do not identify which authorization controls are implemented.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM-007: Expected=InsufficientEvidence, Actual=InsufficientEvidence, Match=True&#xD;
+Explanation: The passage states that OAuth 2.0 provides a framework for delegated authorization but does not mention JWT claims or their use for filtering retrieved documents in the RAG demonstration application.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM-008: Expected=InsufficientEvidence, Actual=InsufficientEvidence, Match=True&#xD;
+Explanation: Source S1 states that enterprise RAG systems must enforce authorization but does not provide any information about the implementation status of document-level authorization in the RAG demonstration application. Therefore, the claim that the demonstration application necessarily implements document-level authorization is not established.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM-009: Expected=InsufficientEvidence, Actual=InsufficientEvidence, Match=True&#xD;
+Explanation: Source S1 states that enterprise RAG systems must enforce authorization but does not provide any information about whether the demonstration application currently implements document-level authorization.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM-010: Expected=InsufficientEvidence, Actual=InsufficientEvidence, Match=True&#xD;
+Explanation: Source S1 establishes that OAuth 2.0 provides delegated authorization, but there is no information in the retrieved passages about the demonstration application using JWT claims to filter retrieved documents.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM-011: Expected=Supported, Actual=Supported, Match=True&#xD;
+Explanation: Source S1 explicitly states that the demonstration application stores embeddings in SQL Server, and source S2 explicitly states that it generates embeddings using OpenAI's text-embedding-3-small model.&#xD;
+SupportingSourceLabels: S1, S2&#xD;
+&#xD;
+CLAIM-012: Expected=InsufficientEvidence, Actual=InsufficientEvidence, Match=True&#xD;
+Explanation: Source S1 states that the demonstration application implements document-level authorization, while source S2 states the opposite. The conflicting information prevents a reliable determination.&#xD;
+SupportingSourceLabels: &#xD;
+&#xD;
+CLAIM VERIFICATION BENCHMARK:&#xD;
+Cases: 12&#xD;
+Correct: 12&#xD;
+Accuracy: 100.0%&#xD;
+&#xD;
+CLASSIFICATION BREAKDOWN:&#xD;
+Supported: 4 reference cases&#xD;
+Contradicted: 1 reference cases&#xD;
+InsufficientEvidence: 7 reference cases</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ff4d992c-2314-4d38-abde-a4943e706cdb" testId="1d375ea0-bdb7-8185-a86e-f7f9fc77ab16" testName="EvaluateAsync_UncitedClaim_ReturnsPartialCoverage" computerName="KBALDWINOCT2025" duration="00:00:08.9254348" startTime="2026-11-16T12:16:34.5643366-05:00" endTime="2026-11-16T12:16:43.5089643-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff4d992c-2314-4d38-abde-a4943e706cdb" />
+    <UnitTestResult executionId="0de4877f-22dd-4218-a00d-2cbbb788459f" testId="1264da31-41a7-8f62-a2be-3d92589d8da0" testName="VerifyAsync_AttributedOAuthClaim_PreservesSourceAttribution" computerName="KBALDWINOCT2025" duration="00:00:01.5433009" startTime="2026-11-16T12:16:38.5133253-05:00" endTime="2026-11-16T12:16:40.0566682-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0de4877f-22dd-4218-a00d-2cbbb788459f">
+      <Output>
+        <StdOut>SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: the sources&#xD;
+CLAIM SOURCE SUBJECT: The sources&#xD;
+SAME SOURCE SUBJECT: True&#xD;
+SUPPORTING SEGMENT: the sources mention that ... OAuth 2.0 provides a framework for delegated authorization&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The assigned segment explicitly states that 'the sources mention ... that OAuth 2.0 provides a framework for delegated authorization,' directly supporting the claim with correct source attribution preserved.&#xD;
+RESTORED SUPPORTING SEGMENT: the sources mention that enterprise RAG systems must enforce authorization and that OAuth 2.0 provides a framework for delegated authorization&#xD;
+Entailment outcome: Entailed</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="75dbccd9-0b6f-4209-b556-f81f6d6a60ef" testId="1bdee39f-4eba-8157-b93e-3707c0418c58" testName="NormalizeAsync_DuplicateClaims_ReportsResults" computerName="KBALDWINOCT2025" duration="00:00:02.9445449" startTime="2026-11-16T12:16:34.5645313-05:00" endTime="2026-11-16T12:16:37.5280538-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75dbccd9-0b6f-4209-b556-f81f6d6a60ef">
+      <Output>
+        <StdOut>Original claims: 4&#xD;
+Normalized claims: 3&#xD;
+Claim: The retrieved sources do not provide specific information about which authorization controls are currently implemented in the RAG demonstration application.&#xD;
+Claim: The sources recommend that enterprise RAG systems must enforce authorization, data classification, source attribution, and auditing.&#xD;
+Claim: The sources emphasize that document access should not be granted solely based on semantic relevance.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b19b84c8-5bae-4ef0-88d3-b186283bfe82" testId="1a934891-a6ae-8da3-a889-d82512ecb1d6" testName="ExtractAsync_CitedClaims_ReportsRelationships" computerName="KBALDWINOCT2025" duration="00:00:03.3531030" startTime="2026-11-16T12:16:34.5592223-05:00" endTime="2026-11-16T12:16:37.9365895-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b19b84c8-5bae-4ef0-88d3-b186283bfe82">
+      <Output>
+        <StdOut>TestContext Messages:&#xD;
+Extracted claims: 3&#xD;
+Claim: Enterprise RAG systems must enforce authorization.&#xD;
+Citations: S1&#xD;
+Claim: OAuth 2.0 provides delegated authorization.&#xD;
+Citations: S5&#xD;
+Claim: The retrieved sources do not establish which controls are implemented in our demonstration application.&#xD;
+Citations:</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0ac10439-681b-4af0-8cf9-a7f83c178b18" testId="1497c825-0561-8966-ab13-386da671efea" testName="ExtractClaimsAsync_AuthorizationAnswer_ReportsClaims" computerName="KBALDWINOCT2025" duration="00:00:03.4611995" startTime="2026-11-16T12:16:34.5659646-05:00" endTime="2026-11-16T12:16:38.0446838-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ac10439-681b-4af0-8cf9-a7f83c178b18">
+      <Output>
+        <StdOut>Extracted claims: 7&#xD;
+&#xD;
+1. The retrieved sources do not provide explicit information about the authorization controls currently implemented in your RAG demonstration application.&#xD;
+2. Enterprise RAG systems must enforce authorization.&#xD;
+3. Enterprise RAG systems must enforce data classification.&#xD;
+4. Enterprise RAG systems must enforce source attribution.&#xD;
+5. Enterprise RAG systems must enforce auditing.&#xD;
+6. OAuth 2.0 is a framework for delegated authorization to protected resources.&#xD;
+7. None of the sources confirm which, if any, authorization controls have been implemented in your demonstration application specifically.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="67e28c1f-87ad-4aef-bee7-c1f37384d276" testId="1e3d0fd1-ac4d-8f64-9a6e-30deca51a1ef" testName="ExtractAsync_ImpersonalReporting_DoesNotInventSourceAttribution" computerName="KBALDWINOCT2025" duration="00:00:04.4800524" startTime="2026-11-16T12:16:38.6469029-05:00" endTime="2026-11-16T12:16:43.1269872-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="67e28c1f-87ad-4aef-bee7-c1f37384d276">
+      <Output>
+        <StdOut>EXTRACTED CLAIM: It is noted that enterprise RAG systems must enforce authorization among other controls.&#xD;
+SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: it&#xD;
+CLAIM SOURCE SUBJECT: It&#xD;
+SAME SOURCE SUBJECT: True&#xD;
+SUPPORTING SEGMENT: it is noted that enterprise RAG systems must enforce authorization among other controls&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The assigned segment explicitly states 'it is noted that enterprise RAG systems must enforce authorization among other controls', which matches the claim exactly and preserves the source attribution 'it'. Therefore, the claim is entailed by the assigned segment.&#xD;
+EXTRACTED CLAIM: There is no explicit information about which authorization mechanisms your demonstration application uses.&#xD;
+SOURCE ATTRIBUTION REQUIRED: False&#xD;
+PASSAGE SOURCE SUBJECT: &#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: there is no explicit information about which authorization mechanisms your demonstration application uses.&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The claim directly quotes the assertion in the assigned segment stating there is no explicit information about the authorization mechanisms used by the demonstration application. No source attribution is needed as this is an impersonal statement without an identified reporting source.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2d973d01-510c-4de5-afdf-f9c4dc7d5de7" testId="1d7025d2-5d2d-81ea-b182-4a4b9ecd0613" testName="ClassifyAsync_NoIndicationOfImplementation_ReturnsCollectionEvidence" computerName="KBALDWINOCT2025" duration="00:00:00.9223876" startTime="2026-11-16T12:16:37.1255812-05:00" endTime="2026-11-16T12:16:38.0480155-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2d973d01-510c-4de5-afdf-f9c4dc7d5de7">
+      <Output>
+        <StdOut>CLAIM TYPE: CollectionEvidence</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="39fbbbe7-62d7-4ade-b4f3-032ef53179ba" testId="13f5a723-2f66-83a2-94e0-86304ff5b568" testName="NormalizeAsync_DistinctClaims_PreservesAllClaims" computerName="KBALDWINOCT2025" duration="00:00:02.4936391" startTime="2026-11-16T12:16:34.5591997-05:00" endTime="2026-11-16T12:16:37.0771068-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="39fbbbe7-62d7-4ade-b4f3-032ef53179ba">
+      <Output>
+        <StdOut>Original claims: 4&#xD;
+Normalized claims: 4&#xD;
+Claim: Enterprise RAG systems must enforce document-level authorization.&#xD;
+Claim: The demonstration application currently implements document-level authorization.&#xD;
+Claim: The demonstration application does not currently implement document-level authorization.&#xD;
+Claim: The retrieved sources do not establish whether the demonstration application implements document-level authorization.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="142239ce-8518-46a1-8c1f-e15bddd7d812" testId="133729ee-4674-8e67-8437-6bf870cb01ec" testName="VerifyAsync_ValidCitation_ReturnsSupported" computerName="KBALDWINOCT2025" duration="00:00:04.3080171" startTime="2026-11-16T12:16:34.5643493-05:00" endTime="2026-11-16T12:16:38.8914665-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="142239ce-8518-46a1-8c1f-e15bddd7d812" />
+    <UnitTestResult executionId="d5d3ef88-5bae-4950-9e0e-55fdc4dfe144" testId="1af29d54-0319-8762-ad27-bcb2224a6160" testName="VerifyAsync_UnrelatedClaimFromOtherClause_ReturnsNotEstablished" computerName="KBALDWINOCT2025" duration="00:00:00.6048989" startTime="2026-11-16T12:16:38.2941013-05:00" endTime="2026-11-16T12:16:38.8990219-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5d3ef88-5bae-4950-9e0e-55fdc4dfe144" />
+    <UnitTestResult executionId="f9ce603e-41d6-46e1-90c2-373f847f5386" testId="1e609574-aa4c-81b3-951f-edde856383fa" testName="VerifyAsync_AmbiguousOAuthImplementation_ReturnsNotEstablished" computerName="KBALDWINOCT2025" duration="00:00:00.5023185" startTime="2026-11-16T12:16:37.9070528-05:00" endTime="2026-11-16T12:16:38.4094218-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f9ce603e-41d6-46e1-90c2-373f847f5386">
+      <Output>
+        <StdOut>ENTAILMENT OUTCOME: NotEstablished</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="341b03b8-a5f4-4651-86fd-168095b8c036" testId="1ebde153-feca-8cb0-aa8c-0b2a0d2758a3" testName="VerifyAsync_RequirementVersusImplementation_DistinguishesEvidence" computerName="KBALDWINOCT2025" duration="00:00:03.3235328" startTime="2026-11-16T12:16:34.5592127-05:00" endTime="2026-11-16T12:16:37.9070059-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="341b03b8-a5f4-4651-86fd-168095b8c036">
+      <Output>
+        <StdOut>REQUIREMENT CLAIM:&#xD;
+Outcome: Supported&#xD;
+Explanation: Source S1 explicitly states that Enterprise RAG systems must enforce authorization, directly supporting the claim.&#xD;
+&#xD;
+IMPLEMENTATION CLAIM:&#xD;
+Outcome: InsufficientEvidence&#xD;
+Explanation: Source S1 states that enterprise RAG systems must enforce document-level authorization but does not confirm that the demonstration application currently enforces it.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c9e00c93-3b24-49fe-8e5e-a6000e33213d" testId="1b13bb6b-a172-81d5-b6f5-e3f63bf1ed44" testName="ExtractClaimsAsync_FixedAnswer_ReportsClaims" computerName="KBALDWINOCT2025" duration="00:00:03.1196720" startTime="2026-11-16T12:16:34.5658664-05:00" endTime="2026-11-16T12:16:37.7032068-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c9e00c93-3b24-49fe-8e5e-a6000e33213d">
+      <Output>
+        <StdOut>TestContext Messages:&#xD;
+Extracted claims: 7&#xD;
+Claim: The retrieved sources do not provide specific information about which authorization controls are currently implemented in the RAG demonstration application.&#xD;
+Claim: Enterprise RAG systems must enforce authorization.&#xD;
+Claim: Enterprise RAG systems must enforce data classification.&#xD;
+Claim: Enterprise RAG systems must enforce source attribution.&#xD;
+Claim: Enterprise RAG systems must enforce auditing.&#xD;
+Claim: Document access should not be granted solely based on semantic relevance.&#xD;
+Claim: No passage confirms which authorization controls are in place in the actual demonstration application.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c1893656-69e8-41a3-ac19-4c798f995035" testId="1abc8354-8598-8c54-85e2-1bfe380ea016" testName="VerifyAsync_ImplicitSubjectWithFullContext_ReturnsTrue" computerName="KBALDWINOCT2025" duration="00:00:00.5606128" startTime="2026-11-16T12:16:38.2937949-05:00" endTime="2026-11-16T12:16:38.8544533-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c1893656-69e8-41a3-ac19-4c798f995035" />
+    <UnitTestResult executionId="0e305e01-7801-43e1-abb3-08d33f0af676" testId="1e60f4cd-876d-8f1b-8392-0db2cf4177de" testName="VerifyAsync_CollectionWideAbsence_SingleSourceDoesNotEstablishCollection" computerName="KBALDWINOCT2025" duration="00:00:00.9471370" startTime="2026-11-16T12:16:37.5661196-05:00" endTime="2026-11-16T12:16:38.5132970-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e305e01-7801-43e1-abb3-08d33f0af676" />
+    <UnitTestResult executionId="6615ddc3-b6f5-4bbb-8f03-b4914a1948e7" testId="11afe399-5ccc-8474-9716-612bf1cbcd3a" testName="VerifyAsync_UnknownCitation_ReturnsUnknownSource" computerName="KBALDWINOCT2025" duration="00:00:02.9825366" startTime="2026-11-16T12:16:34.5592262-05:00" endTime="2026-11-16T12:16:37.5660660-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6615ddc3-b6f5-4bbb-8f03-b4914a1948e7" />
+    <UnitTestResult executionId="62764651-be98-45fc-b3a4-059259ed84de" testId="10220523-1274-8ab5-ba32-3626dbadfdd5" testName="ExtractAsync_AmbiguousImplementationStatus_DoesNotAssertNonImplementation" computerName="KBALDWINOCT2025" duration="00:00:01.7816400" startTime="2026-11-16T12:16:38.6396919-05:00" endTime="2026-11-16T12:16:40.4213743-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="62764651-be98-45fc-b3a4-059259ed84de">
+      <Output>
+        <StdOut>EXTRACTED CLAIM: There is no indication that authorization controls are actively implemented in your demonstration application.&#xD;
+ENTAILMENT OUTCOME: Entailed</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dd4700b1-205d-45f7-88fc-0462699e736f" testId="1ca78966-624e-8e8e-a410-156910be3089" testName="VerifyAsync_CollectionWideAbsence_ContradictedByOneSource" computerName="KBALDWINOCT2025" duration="00:00:01.2254516" startTime="2026-11-16T12:16:37.5281115-05:00" endTime="2026-11-16T12:16:38.7536603-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd4700b1-205d-45f7-88fc-0462699e736f" />
+    <UnitTestResult executionId="af2a9b51-f870-4cc2-b781-b2437efc0ef1" testId="14136ad2-e980-85d5-93eb-d77c1b5e1f2f" testName="ClassifyAsync_ExplicitRetrievedEvidenceAbsence_ReturnsCollectionEvidence" computerName="KBALDWINOCT2025" duration="00:00:00.7067728" startTime="2026-11-16T12:16:37.3415361-05:00" endTime="2026-11-16T12:16:38.0483609-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af2a9b51-f870-4cc2-b781-b2437efc0ef1">
+      <Output>
+        <StdOut>CLAIM TYPE: CollectionEvidence</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="769ad4d2-efb6-44c3-8f72-a180749cfb8c" testId="1aa97037-6df3-8e20-98e0-e6df9f394688" testName="VerifyAsync_UnattributedOAuthClaim_ReportsOutcome" computerName="KBALDWINOCT2025" duration="00:00:01.5187297" startTime="2026-11-16T12:16:38.5303166-05:00" endTime="2026-11-16T12:16:40.0490674-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="769ad4d2-efb6-44c3-8f72-a180749cfb8c">
+      <Output>
+        <StdOut>SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: the sources&#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: and that OAuth 2.0 provides a framework for delegated authorization&#xD;
+VERIFIER OUTCOME: NotEstablished&#xD;
+VERIFIER EXPLANATION: The assigned segment attributes the assertion that OAuth 2.0 provides a framework for delegated authorization to 'the sources', but the extracted claim omits this attribution. Therefore, it strengthens the assertion by removing the source attribution, leading to NotEstablished.&#xD;
+Entailment outcome: NotEstablished</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2549f565-3bea-4e14-8aeb-8c5722864d0d" testId="17ebd2e7-a80d-8d39-a883-e80d776717b2" testName="ExtractAsync_ExplicitReporting_PreservesOriginalSubjectAndVerb" computerName="KBALDWINOCT2025" duration="00:00:01.0028472" startTime="2026-11-16T12:16:38.6627261-05:00" endTime="2026-11-16T12:16:39.6656113-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2549f565-3bea-4e14-8aeb-8c5722864d0d">
+      <Output>
+        <StdOut>EXTRACTED CLAIM: They indicate that enterprise RAG systems must enforce authorization controls among other security measures.&#xD;
+EXTRACTED CLAIM: There is no explicit evidence describing the implementation status of such controls in your demonstration.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4dae623f-b734-4c42-b567-42bd3692376e" testId="1d8d64c1-19e5-8419-acf7-da7b01a586bf" testName="VerifyAsync_ExplicitContradiction_ReportsContradicted" computerName="KBALDWINOCT2025" duration="00:00:06.5411757" startTime="2026-11-16T12:16:34.5639670-05:00" endTime="2026-11-16T12:16:41.1246898-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4dae623f-b734-4c42-b567-42bd3692376e">
+      <Output>
+        <StdOut>Outcome: Contradicted&#xD;
+Explanation: Source S1 explicitly states that the RAG demonstration application does not implement document-level authorization and does not filter documents by user permissions, contradicting the claim.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ef100d85-f0df-4dde-b9bd-20a0c21e2f5c" testId="140f7c80-d4ff-827b-b643-0fb6f53d02a3" testName="RecordedRequirementCommentary_LiveJudge_DistinguishesRequirementFromImplementation (True)" computerName="KBALDWINOCT2025" duration="00:00:02.0503804" startTime="2026-11-16T12:16:36.9376645-05:00" endTime="2026-11-16T12:16:38.9881223-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ef100d85-f0df-4dde-b9bd-20a0c21e2f5c">
+      <Output>
+        <StdOut>FIXED CLAIM: Authorization, data classification, source attribution, and auditing are implemented in the demonstration application.&#xD;
+FIXED ASSIGNED PASSAGE: While one source states that enterprise RAG systems must enforce authorization, data classification, source attribution, and auditing, it is a security requirement rather than confirmation of implementation [S1].&#xD;
+SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: one source&#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: While one source states that enterprise RAG systems must enforce authorization, data classification, source attribution, and auditing, it is a security requirement rather than confirmation of implementation&#xD;
+VERIFIER OUTCOME: NotEstablished&#xD;
+VERIFIER EXPLANATION: The assigned segment states that one source requires enforcement of authorization, data classification, source attribution, and auditing as security requirements but explicitly clarifies this is not confirmation of their implementation. The extracted claim asserts that these controls are implemented in the demonstration application, which is stronger than what the segment confirms and omits the source attribution. Therefore, the claim is not established by the assigned segment.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="be1118ec-aea4-4324-80a6-836338072dea" testId="13adf83b-f355-8e0e-9eb9-2452e164c219" testName="VerifyAsync_ClaimFromDifferentSegment_ReturnsNotEstablished" computerName="KBALDWINOCT2025" duration="00:00:01.7079456" startTime="2026-11-16T12:16:38.4099896-05:00" endTime="2026-11-16T12:16:40.1179919-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="be1118ec-aea4-4324-80a6-836338072dea">
+      <Output>
+        <StdOut>SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: The sources&#xD;
+CLAIM SOURCE SUBJECT: The sources&#xD;
+SAME SOURCE SUBJECT: True&#xD;
+SUPPORTING SEGMENT: The sources recommend authorization controls&#xD;
+VERIFIER OUTCOME: NotEstablished&#xD;
+VERIFIER EXPLANATION: The assigned segment includes only the phrase 'but do not confirm their implementation.' The recommendation of authorization controls by the sources is only present in the surrounding context and not in the assigned segment itself. Therefore, the claim that 'The sources recommend authorization controls.' is not directly supported by the assigned segment.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="55b9c107-6213-4f87-b29f-56ec14e64561" testId="16274ed9-4c9a-8dfc-a0a7-69c7020c78cf" testName="VerifyAsync_EvidenceAbsence_DoesNotEstablishImplementationAbsence" computerName="KBALDWINOCT2025" duration="00:00:00.5897640" startTime="2026-11-16T12:16:37.7038513-05:00" endTime="2026-11-16T12:16:38.2937402-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55b9c107-6213-4f87-b29f-56ec14e64561" />
+    <UnitTestResult executionId="9f1452ca-128a-4770-8736-40b81d99772e" testId="1184c7d0-964d-895a-8b9a-452779b1cda6" testName="VerifyAsync_UnsupportedCitation_ReturnsUnsupported" computerName="KBALDWINOCT2025" duration="00:00:03.9215327" startTime="2026-11-16T12:16:34.5644712-05:00" endTime="2026-11-16T12:16:38.5050409-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f1452ca-128a-4770-8736-40b81d99772e" />
+    <UnitTestResult executionId="45044a30-8d97-4607-a222-55ecea883784" testId="17b44b8a-754a-8900-a9ce-e407fd80c766" testName="EvaluateAsync_ValidAnswer_ReturnsCombinedEvaluation" computerName="KBALDWINOCT2025" duration="00:00:09.0411757" startTime="2026-11-16T12:16:34.5640701-05:00" endTime="2026-11-16T12:16:43.6246564-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="45044a30-8d97-4607-a222-55ecea883784" />
+    <UnitTestResult executionId="07f0307d-4744-40b9-b469-57467538e21a" testId="1c1416fc-090b-842a-ba95-ccd6587f884e" testName="VerifyAsync_UnconfirmedImplementation_DoesNotEstablishNonImplementation" computerName="KBALDWINOCT2025" duration="00:00:01.0422553" startTime="2026-11-16T12:16:37.7085868-05:00" endTime="2026-11-16T12:16:38.7508736-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="07f0307d-4744-40b9-b469-57467538e21a" />
+    <UnitTestResult executionId="34be06a3-d340-477c-ae2f-1d46f4c04891" testId="17d4555b-3f61-886b-b7c0-18b53c5b808c" testName="VerifyAsync_ValidClaimSpan_ReturnsTrue" computerName="KBALDWINOCT2025" duration="00:00:02.3537865" startTime="2026-11-16T12:16:34.5639588-05:00" endTime="2026-11-16T12:16:36.9373218-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34be06a3-d340-477c-ae2f-1d46f4c04891" />
+    <UnitTestResult executionId="31641af7-2d43-4935-9dce-f2f54c8b0f8d" testId="14c6d607-d6f0-885b-81c8-971c22429e87" testName="VerifyAsync_ExplicitAuthorizationRequirement_ReturnsContradicted" computerName="KBALDWINOCT2025" duration="00:00:00.5303311" startTime="2026-11-16T12:16:38.0453111-05:00" endTime="2026-11-16T12:16:38.5756985-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="31641af7-2d43-4935-9dce-f2f54c8b0f8d">
+      <Output>
+        <StdOut>ENTAILMENT OUTCOME: Contradicted</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1b178a42-d3ab-4766-9085-c5ccada53e48" testId="1747f000-c7d0-807a-a591-c577b1e1b776" testName="VerifyAsync_ExplicitAuthorizationRequirement_ReturnsEntailed" computerName="KBALDWINOCT2025" duration="00:00:00.5936302" startTime="2026-11-16T12:16:37.9366320-05:00" endTime="2026-11-16T12:16:38.5302946-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b178a42-d3ab-4766-9085-c5ccada53e48">
+      <Output>
+        <StdOut>ENTAILMENT OUTCOME: Entailed</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aa886397-d85d-476d-893f-c71eeb9d82a4" testId="1a61d4e3-4692-8982-bfc5-e023ab583a17" testName="VerifyAsync_EntailmentAdapter_AmbiguousOAuth_ReturnsFalse" computerName="KBALDWINOCT2025" duration="00:00:00.9726885" startTime="2026-11-16T12:16:38.0483834-05:00" endTime="2026-11-16T12:16:39.0210947-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa886397-d85d-476d-893f-c71eeb9d82a4" />
+    <UnitTestResult executionId="499ffd9e-498d-4656-abdb-60f7b8d1a0f8" testId="1f786b2e-64af-8d2b-bd42-5c3440d911e6" testName="VerifyAsync_AmbiguousApplicationStatus_RejectsNonImplementation" computerName="KBALDWINOCT2025" duration="00:00:00.8834614" startTime="2026-11-16T12:16:37.7633689-05:00" endTime="2026-11-16T12:16:38.6468756-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="499ffd9e-498d-4656-abdb-60f7b8d1a0f8" />
+    <UnitTestResult executionId="b4c021d5-e9fa-49c2-87ee-f2e934c1e665" testId="12c87fc4-247a-838e-adfe-a7d7aa921fdb" testName="ClassifyAsync_MissingRetrievedEvidence_ReturnsCollectionEvidence" computerName="KBALDWINOCT2025" duration="00:00:00.6863025" startTime="2026-11-16T12:16:37.0769267-05:00" endTime="2026-11-16T12:16:37.7633211-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b4c021d5-e9fa-49c2-87ee-f2e934c1e665" />
+    <UnitTestResult executionId="fecc1f0e-81f5-4734-ba82-a384668d0b93" testId="1452ee9c-adc7-830f-ade1-b690d9729cd0" testName="AnswerAsync_AuthorizationImplementation_ReportsAnswer" computerName="KBALDWINOCT2025" duration="00:00:20.3103055" startTime="2026-11-16T12:16:34.5591950-05:00" endTime="2026-11-16T12:16:54.8946328-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fecc1f0e-81f5-4734-ba82-a384668d0b93">
+      <Output>
+        <StdOut>info: Microsoft.EntityFrameworkCore.Database.Command[20101]&#xD;
+      Executed DbCommand (20ms) [Parameters=[@queryVector='?' (Size = 6152) (DbType = Binary), @p='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']&#xD;
+      SELECT [d1].[Id], [d1].[DocumentId], [d0].[Title] AS [DocumentTitle], [d1].[Content], VECTOR_DISTANCE('cosine', [d1].[Embedding], @queryVector) AS [Distance]&#xD;
+      FROM (&#xD;
+          SELECT TOP(@p) [d].[Id], [d].[Content], [d].[DocumentId], [d].[Embedding], VECTOR_DISTANCE('cosine', [d].[Embedding], @queryVector) AS [c]&#xD;
+          FROM [DocumentChunks] AS [d]&#xD;
+          ORDER BY VECTOR_DISTANCE('cosine', [d].[Embedding], @queryVector)&#xD;
+      ) AS [d1]&#xD;
+      INNER JOIN [Documents] AS [d0] ON [d1].[DocumentId] = [d0].[Id]&#xD;
+      ORDER BY [d1].[c]&#xD;
+ANSWER BEFORE EVALUATION: The retrieved sources do not establish which specific authorization controls are currently implemented in your RAG demonstration application. While the sources indicate that enterprise RAG systems must enforce authorization along with other controls [S1], there is no explicit information about the actual authorization mechanisms implemented in your demonstration. Therefore, the implementation status of authorization controls in your RAG demo is not confirmed by the provided passages.&#xD;
+PASSAGE 1: The retrieved sources do not establish which specific authorization controls are currently implemented in your RAG demonstration application.&#xD;
+CITATIONS: &#xD;
+PASSAGE 2: While the sources indicate that enterprise RAG systems must enforce authorization along with other controls [S1], there is no explicit information about the actual authorization mechanisms implemented in your demonstration.&#xD;
+CITATIONS: S1&#xD;
+PASSAGE 3: Therefore, the implementation status of authorization controls in your RAG demo is not confirmed by the provided passages.&#xD;
+CITATIONS: &#xD;
+Claim copies the complete assigned segment.&#xD;
+SOURCE ATTRIBUTION REQUIRED: True&#xD;
+PASSAGE SOURCE SUBJECT: the sources&#xD;
+CLAIM SOURCE SUBJECT: The sources&#xD;
+SAME SOURCE SUBJECT: True&#xD;
+SUPPORTING SEGMENT: the sources indicate that enterprise RAG systems must enforce authorization along with other controls&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The claim accurately preserves the assertion found in the assigned segment, including source attribution 'the sources' and the requirement that enterprise RAG systems must enforce authorization and other controls. The claim does not add or omit details from the assertion.&#xD;
+SOURCE ATTRIBUTION REQUIRED: False&#xD;
+PASSAGE SOURCE SUBJECT: &#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: there is no explicit information about the actual authorization mechanisms implemented in your demonstration.&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The claim directly matches the second clause of the assigned segment, stating that there is no explicit information about the actual authorization mechanisms implemented in the demonstration. This part of the sentence is an impersonal assertion without a named reporting source, so no source attribution is required. The claim is therefore entailed.&#xD;
+SOURCE ATTRIBUTION REQUIRED: False&#xD;
+PASSAGE SOURCE SUBJECT: &#xD;
+CLAIM SOURCE SUBJECT: &#xD;
+SAME SOURCE SUBJECT: False&#xD;
+SUPPORTING SEGMENT: Therefore, the implementation status of authorization controls in your RAG demo is not confirmed by the provided passages.&#xD;
+VERIFIER OUTCOME: Entailed&#xD;
+VERIFIER EXPLANATION: The claim exactly matches the assertion in the assigned segment. There is no identified reporting source in the assertion, so sourceAttributionRequired is false.&#xD;
+&#xD;
+CITATION EVALUATION:&#xD;
+Total citations: 2&#xD;
+Supported citations: 2&#xD;
+Unsupported citations: 0&#xD;
+Unknown-source citations: 0&#xD;
+Citation accuracy: 100.0%&#xD;
+Cited-claim support rate: 100.0%&#xD;
+Citation coverage: 50.0%&#xD;
+Total factual claims: 1&#xD;
+Cited factual claims: 1&#xD;
+Factual citation coverage: 100.0%&#xD;
+&#xD;
+CITATION COVERAGE DETAILS:&#xD;
+Total claims: 4&#xD;
+Cited claims: 2&#xD;
+Reported coverage: 50.0%&#xD;
+Calculated coverage: 50.0%&#xD;
+&#xD;
+INDIVIDUAL CITATION RESULTS:&#xD;
+----------------------------------------&#xD;
+Claim: The sources indicate that enterprise RAG systems must enforce authorization along with other controls.&#xD;
+Source: S1&#xD;
+Outcome: Supported&#xD;
+Explanation: Source S1 explicitly states that enterprise RAG systems must enforce authorization along with data classification, source attribution, and auditing.&#xD;
+----------------------------------------&#xD;
+Claim: There is no explicit information about the actual authorization mechanisms implemented in your demonstration.&#xD;
+Source: S1&#xD;
+Outcome: Supported&#xD;
+Explanation: Source S1 discusses the importance of enforcing authorization but does not provide explicit information about the actual authorization mechanisms implemented in the demonstration.&#xD;
+&#xD;
+RETRIEVAL EVALUATION:&#xD;
+Retrieved sources: 5&#xD;
+Cited sources: 1&#xD;
+[S1] Chunk 69, Distance 0.476192, Cited: True&#xD;
+[S2] Chunk 64, Distance 0.522351, Cited: False&#xD;
+[S3] Chunk 44, Distance 0.561401, Cited: False&#xD;
+[S4] Chunk 65, Distance 0.561756, Cited: False&#xD;
+[S5] Chunk 49, Distance 0.575590, Cited: False&#xD;
+&#xD;
+FAITHFULNESS EVALUATION:&#xD;
+Total claims: 2&#xD;
+Supported claims: 2&#xD;
+Faithfulness score: 100.0%&#xD;
+&#xD;
+Claim: The retrieved sources do not establish which specific authorization controls are currently implemented in your RAG demonstration application.&#xD;
+Outcome: Supported&#xD;
+Evidence: &#xD;
+Explanation: None of the supplied passages specify which specific authorization controls are currently implemented in the RAG demonstration application. While authorization is mentioned as a requirement (S1) and OAuth 2.0 is described broadly (S5), these do not establish implementation in the demonstration application.&#xD;
+&#xD;
+Claim: Enterprise RAG systems must enforce authorization along with other controls.&#xD;
+Outcome: Supported&#xD;
+Evidence: S1&#xD;
+Explanation: Source S1 explicitly states that enterprise RAG systems must enforce authorization along with data classification, source attribution, and auditing, thereby establishing the claim.&#xD;
+Evaluation: RAG-SECURITY-002&#xD;
+Question: What authorization controls are currently implemented in our RAG demonstration application?&#xD;
+Should Abstain: True&#xD;
+&#xD;
+ANSWER:&#xD;
+The retrieved sources do not establish which specific authorization controls are currently implemented in your RAG demonstration application. While the sources indicate that enterprise RAG systems must enforce authorization along with other controls [S1], there is no explicit information about the actual authorization mechanisms implemented in your demonstration. Therefore, the implementation status of authorization controls in your RAG demo is not confirmed by the provided passages.&#xD;
+&#xD;
+CITED SOURCES:&#xD;
+[S1] Enterprise RAG Architecture (Chunk 69, Distance 0.476192)</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="EvaluateAsync_UnsupportedAnswer_ReturnsZeroFaithfulnessAndCitationAccuracy" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1b4e6230-c96a-869f-bc2d-54ab0aef4b50">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="bd116c4c-65e1-4a1c-a291-9a4ea06ef825" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimExtractionIntegrationTests" name="EvaluateAsync_UnsupportedAnswer_ReturnsZeroFaithfulnessAndCitationAccuracy" />
+    </UnitTest>
+    <UnitTest name="ExtractAsync_ImpersonalReporting_DoesNotInventSourceAttribution" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1e3d0fd1-ac4d-8f64-9a6e-30deca51a1ef">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="67e28c1f-87ad-4aef-bee7-c1f37384d276" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmPassageClaimExtractorTests" name="ExtractAsync_ImpersonalReporting_DoesNotInventSourceAttribution" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_UnsupportedCitation_ReturnsUnsupported" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1184c7d0-964d-895a-8b9a-452779b1cda6">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="9f1452ca-128a-4770-8736-40b81d99772e" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="VerifyAsync_UnsupportedCitation_ReturnsUnsupported" />
+    </UnitTest>
+    <UnitTest name="ClassifyAsync_ExplicitRetrievedEvidenceAbsence_ReturnsCollectionEvidence" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="14136ad2-e980-85d5-93eb-d77c1b5e1f2f">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="af2a9b51-f870-4cc2-b781-b2437efc0ef1" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimClassifierTests" name="ClassifyAsync_ExplicitRetrievedEvidenceAbsence_ReturnsCollectionEvidence" />
+    </UnitTest>
+    <UnitTest name="ExtractClaimsAsync_FixedAnswer_ReportsClaims" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1b13bb6b-a172-81d5-b6f5-e3f63bf1ed44">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="c9e00c93-3b24-49fe-8e5e-a6000e33213d" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="ExtractClaimsAsync_FixedAnswer_ReportsClaims" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_UnattributedOAuthClaim_ReportsOutcome" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1aa97037-6df3-8e20-98e0-e6df9f394688">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="769ad4d2-efb6-44c3-8f72-a180749cfb8c" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_UnattributedOAuthClaim_ReportsOutcome" />
+    </UnitTest>
+    <UnitTest name="ExtractClaimsAsync_AuthorizationAnswer_ReportsClaims" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1497c825-0561-8966-ab13-386da671efea">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="0ac10439-681b-4af0-8cf9-a7f83c178b18" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimExtractionIntegrationTests" name="ExtractClaimsAsync_AuthorizationAnswer_ReportsClaims" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ExplicitAuthorizationRequirement_ReturnsEntailed" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1747f000-c7d0-807a-a591-c577b1e1b776">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="1b178a42-d3ab-4766-9085-c5ccada53e48" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_ExplicitAuthorizationRequirement_ReturnsEntailed" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_AmbiguousApplicationStatus_RejectsNonImplementation" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1f786b2e-64af-8d2b-bd42-5c3440d911e6">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="499ffd9e-498d-4656-abdb-60f7b8d1a0f8" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_AmbiguousApplicationStatus_RejectsNonImplementation" />
+    </UnitTest>
+    <UnitTest name="RecordedDroppedAttribution_LiveRepair_PreservesSourceOwnership" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1bbc0448-4908-8511-96e6-6ebb0386c803">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="85d3bf3b-ed34-4f72-82de-f493825666ff" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionRegressionTests" name="RecordedDroppedAttribution_LiveRepair_PreservesSourceOwnership" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_EntailmentAdapter_AmbiguousOAuth_ReturnsFalse" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1a61d4e3-4692-8982-bfc5-e023ab583a17">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="aa886397-d85d-476d-893f-c71eeb9d82a4" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_EntailmentAdapter_AmbiguousOAuth_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="ExtractAndNormalizeAsync_MixedEvidenceAndRequirement_DeduplicatesEquivalentEvidenceLimitations" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="10f23392-93e3-8f81-9a1a-5c86f9662687">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="d720fb31-8f0b-4862-9a70-8c524c021cf4" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimExtractionIntegrationTests" name="ExtractAndNormalizeAsync_MixedEvidenceAndRequirement_DeduplicatesEquivalentEvidenceLimitations" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_UnconfirmedImplementation_DoesNotEstablishNonImplementation" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1c1416fc-090b-842a-ba95-ccd6587f884e">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="07f0307d-4744-40b9-b469-57467538e21a" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_UnconfirmedImplementation_DoesNotEstablishNonImplementation" />
+    </UnitTest>
+    <UnitTest name="ExtractAsync_CitedClaims_ReportsRelationships" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1a934891-a6ae-8da3-a889-d82512ecb1d6">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="b19b84c8-5bae-4ef0-88d3-b186283bfe82" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="ExtractAsync_CitedClaims_ReportsRelationships" />
+    </UnitTest>
+    <UnitTest name="SearchAsync_AuthorizationQuestion_EvaluatesRetrieval" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1081011a-7daa-8d91-9464-10c52f759078">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+        <TestCategoryItem TestCategory="DatabaseIntegration" />
+      </TestCategory>
+      <Execution id="a000ef3e-d589-4dd9-93e3-12ca8d43f632" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.SemanticSearchIntegrationTests" name="SearchAsync_AuthorizationQuestion_EvaluatesRetrieval" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_CollectionWideAbsence_ContradictedByOneSource" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1ca78966-624e-8e8e-a410-156910be3089">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="dd4700b1-205d-45f7-88fc-0462699e736f" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimEvidenceVerifierTests" name="VerifyAsync_CollectionWideAbsence_ContradictedByOneSource" />
+    </UnitTest>
+    <UnitTest name="ClassifyAsync_MissingRetrievedEvidence_ReturnsCollectionEvidence" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="12c87fc4-247a-838e-adfe-a7d7aa921fdb">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="b4c021d5-e9fa-49c2-87ee-f2e934c1e665" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimClassifierTests" name="ClassifyAsync_MissingRetrievedEvidence_ReturnsCollectionEvidence" />
+    </UnitTest>
+    <UnitTest name="RecordedRequirementCommentary_LiveJudge_DistinguishesRequirementFromImplementation (True)" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="140f7c80-d4ff-827b-b643-0fb6f53d02a3">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="ef100d85-f0df-4dde-b9bd-20a0c21e2f5c" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionRegressionTests" name="RecordedRequirementCommentary_LiveJudge_DistinguishesRequirementFromImplementation" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_RecommendationInConcessiveClause_ReturnsEntailed" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="112cd378-fb94-8cec-bcf1-0f5d7d678226">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="44514841-c59c-434d-be00-36e191cde33e" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_RecommendationInConcessiveClause_ReturnsEntailed" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ExplicitContradiction_ReportsContradicted" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1d8d64c1-19e5-8419-acf7-da7b01a586bf">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="4dae623f-b734-4c42-b567-42bd3692376e" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimEvidenceVerificationIntegrationTests" name="VerifyAsync_ExplicitContradiction_ReportsContradicted" />
+    </UnitTest>
+    <UnitTest name="EvaluateAsync_ValidAnswer_ReturnsCombinedEvaluation" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="17b44b8a-754a-8900-a9ce-e407fd80c766">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="45044a30-8d97-4607-a222-55ecea883784" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimExtractionIntegrationTests" name="EvaluateAsync_ValidAnswer_ReturnsCombinedEvaluation" />
+    </UnitTest>
+    <UnitTest name="ClassifyAsync_NoIndicationOfImplementation_ReturnsCollectionEvidence" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1d7025d2-5d2d-81ea-b182-4a4b9ecd0613">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="2d973d01-510c-4de5-afdf-f9c4dc7d5de7" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimClassifierTests" name="ClassifyAsync_NoIndicationOfImplementation_ReturnsCollectionEvidence" />
+    </UnitTest>
+    <UnitTest name="RecordedRequirementCommentary_LiveJudge_DistinguishesRequirementFromImplementation (False)" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="11a50682-51b9-8d34-9c70-cba11b301032">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="17843793-4985-49e8-8e95-b215f7eb165d" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionRegressionTests" name="RecordedRequirementCommentary_LiveJudge_DistinguishesRequirementFromImplementation" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ImplicitSubjectWithFullContext_ReturnsTrue" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1abc8354-8598-8c54-85e2-1bfe380ea016">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="c1893656-69e8-41a3-ac19-4c798f995035" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_ImplicitSubjectWithFullContext_ReturnsTrue" />
+    </UnitTest>
+    <UnitTest name="NormalizeAsync_DistinctClaims_PreservesAllClaims" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="13f5a723-2f66-83a2-94e0-86304ff5b568">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="39fbbbe7-62d7-4ade-b4f3-032ef53179ba" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimExtractionIntegrationTests" name="NormalizeAsync_DistinctClaims_PreservesAllClaims" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_EvidenceAbsence_DoesNotEstablishImplementationAbsence" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="16274ed9-4c9a-8dfc-a0a7-69c7020c78cf">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="55b9c107-6213-4f87-b29f-56ec14e64561" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_EvidenceAbsence_DoesNotEstablishImplementationAbsence" />
+    </UnitTest>
+    <UnitTest name="ExtractAsync_ExplicitReporting_PreservesOriginalSubjectAndVerb" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="17ebd2e7-a80d-8d39-a883-e80d776717b2">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="2549f565-3bea-4e14-8aeb-8c5722864d0d" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmPassageClaimExtractorTests" name="ExtractAsync_ExplicitReporting_PreservesOriginalSubjectAndVerb" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_UnrelatedClaimFromOtherClause_ReturnsNotEstablished" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1af29d54-0319-8762-ad27-bcb2224a6160">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="d5d3ef88-5bae-4950-9e0e-55fdc4dfe144" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_UnrelatedClaimFromOtherClause_ReturnsNotEstablished" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ValidCitation_ReturnsSupported" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="133729ee-4674-8e67-8437-6bf870cb01ec">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="142239ce-8518-46a1-8c1f-e15bddd7d812" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="VerifyAsync_ValidCitation_ReturnsSupported" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ClaimFromDifferentSegment_ReturnsNotEstablished" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="13adf83b-f355-8e0e-9eb9-2452e164c219">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="be1118ec-aea4-4324-80a6-836338072dea" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_ClaimFromDifferentSegment_ReturnsNotEstablished" />
+    </UnitTest>
+    <UnitTest name="IsSupportedAsync_AmbiguousOAuthImplementation_ReturnsFalse" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="18cdcf2a-5d5b-8fae-a42c-203f0f871f5f">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="55b9e16b-dd3a-41bb-baaa-946b4c734519" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="IsSupportedAsync_AmbiguousOAuthImplementation_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="PassageClaimExtraction_ValidPassages_ReturnsCorrectIds" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="11b10bff-0bcc-8dd1-9635-a37799bd3869">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="5fe273fd-89bc-4164-9327-c7df60ddc830" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="PassageClaimExtraction_ValidPassages_ReturnsCorrectIds" />
+    </UnitTest>
+    <UnitTest name="FixedAnswer_LiveExtraction_PreservesClaimProvenance" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="170efa1b-0686-8bca-a01a-8df2d2d5bb91">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="a7ed10dc-483e-484a-b57c-4f4df82264d6" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionRegressionTests" name="FixedAnswer_LiveExtraction_PreservesClaimProvenance" />
+    </UnitTest>
+    <UnitTest name="PassageClaimExtraction_UncitedClaim_PreservesMissingCitation" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="182480bb-727f-8511-b8f1-20cd7abc7584">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="0b53a309-1f41-407a-a7f2-0cac53631d63" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="PassageClaimExtraction_UncitedClaim_PreservesMissingCitation" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_AmbiguousOAuthImplementation_ReturnsNotEstablished" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1e609574-aa4c-81b3-951f-edde856383fa">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="f9ce603e-41d6-46e1-90c2-373f847f5386" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_AmbiguousOAuthImplementation_ReturnsNotEstablished" />
+    </UnitTest>
+    <UnitTest name="ExtractAsync_RetrievedEvidenceAbsence_PreservesScope" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="165c50c8-239d-88d8-bef0-cbf80244e2f2">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="89b05b11-f383-4780-b362-8bcaca41869d" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmPassageClaimExtractorTests" name="ExtractAsync_RetrievedEvidenceAbsence_PreservesScope" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ImplicitSubjectInAssignedSegment_ReturnsEntailed" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1ecf8843-b14b-8078-981c-e0dade491b87">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="c849743c-08a9-49a9-a168-11635184c25c" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_ImplicitSubjectInAssignedSegment_ReturnsEntailed" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_RequirementVersusImplementation_DistinguishesEvidence" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1ebde153-feca-8cb0-aa8c-0b2a0d2758a3">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="341b03b8-a5f4-4651-86fd-168095b8c036" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimEvidenceVerificationIntegrationTests" name="VerifyAsync_RequirementVersusImplementation_DistinguishesEvidence" />
+    </UnitTest>
+    <UnitTest name="PassageClaimExtraction_MultipleCitedAssertions_MapsCorrectCitations" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1af00d3b-fccd-89dc-bc11-7d2495597317">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="ea0a5e97-4526-43c5-8063-b31aac6ddaaf" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="PassageClaimExtraction_MultipleCitedAssertions_MapsCorrectCitations" />
+    </UnitTest>
+    <UnitTest name="ExtractAsync_AmbiguousImplementationStatus_DoesNotAssertNonImplementation" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="10220523-1274-8ab5-ba32-3626dbadfdd5">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="62764651-be98-45fc-b3a4-059259ed84de" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmPassageClaimExtractorTests" name="ExtractAsync_AmbiguousImplementationStatus_DoesNotAssertNonImplementation" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_MixedCitations_ReturnsFiftyPercentAccuracy" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1edb7895-dbc3-81cf-90e7-3a6b15e36337">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="0cceeb7c-c198-4366-a069-eaa4e2a71d1a" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="VerifyAsync_MixedCitations_ReturnsFiftyPercentAccuracy" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_CollectionWideAbsence_SingleSourceDoesNotEstablishCollection" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1e60f4cd-876d-8f1b-8392-0db2cf4177de">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="0e305e01-7801-43e1-abb3-08d33f0af676" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimEvidenceVerifierTests" name="VerifyAsync_CollectionWideAbsence_SingleSourceDoesNotEstablishCollection" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ExplicitAuthorizationRequirement_ReturnsContradicted" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="14c6d607-d6f0-885b-81c8-971c22429e87">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="31641af7-2d43-4935-9dce-f2f54c8b0f8d" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_ExplicitAuthorizationRequirement_ReturnsContradicted" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_InvalidClaimSpan_ReturnsFalse" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="196e144b-26c8-8c13-a869-7e29fe0243ad">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="2124b7eb-4049-4fc1-91e6-ebf01c86feb3" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="VerifyAsync_InvalidClaimSpan_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ValidClaimSpan_ReturnsTrue" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="17d4555b-3f61-886b-b7c0-18b53c5b808c">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="34be06a3-d340-477c-ae2f-1d46f4c04891" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="VerifyAsync_ValidClaimSpan_ReturnsTrue" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_UnknownCitation_ReturnsUnknownSource" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="11afe399-5ccc-8474-9716-612bf1cbcd3a">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="6615ddc3-b6f5-4bbb-8f03-b4914a1948e7" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimExtractionIntegrationTests" name="VerifyAsync_UnknownCitation_ReturnsUnknownSource" />
+    </UnitTest>
+    <UnitTest name="ClassifyAsync_MissingImplementation_ReturnsFactual" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="12e5427b-4104-8efa-af38-619b96bd2b50">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+      </TestCategory>
+      <Execution id="5fd70646-37fe-4d29-9173-a469b3338505" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimClassifierTests" name="ClassifyAsync_MissingImplementation_ReturnsFactual" />
+    </UnitTest>
+    <UnitTest name="AnswerAsync_AuthorizationImplementation_ReportsAnswer" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1452ee9c-adc7-830f-ade1-b690d9729cd0">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+        <TestCategoryItem TestCategory="DatabaseIntegration" />
+      </TestCategory>
+      <Execution id="fecc1f0e-81f5-4734-ba82-a384668d0b93" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.RagAnswerIntegrationTests" name="AnswerAsync_AuthorizationImplementation_ReportsAnswer" />
+    </UnitTest>
+    <UnitTest name="NormalizeAsync_DuplicateClaims_ReportsResults" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1bdee39f-4eba-8157-b93e-3707c0418c58">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="75dbccd9-0b6f-4209-b556-f81f6d6a60ef" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimExtractionIntegrationTests" name="NormalizeAsync_DuplicateClaims_ReportsResults" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_AttributedOAuthClaim_PreservesSourceAttribution" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1264da31-41a7-8f62-a2be-3d92589d8da0">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="0de4877f-22dd-4218-a00d-2cbbb788459f" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.LlmClaimSpanVerifierTests" name="VerifyAsync_AttributedOAuthClaim_PreservesSourceAttribution" />
+    </UnitTest>
+    <UnitTest name="VerifyAsync_ReferenceCases_MatchExpectedOutcomes" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1ce8dc08-11be-8c09-8374-0dd4cfd61054">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="3d4f3dbb-a129-4c74-84f1-7fbb900981dc" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Evaluation.ClaimVerificationBenchmarkTests" name="VerifyAsync_ReferenceCases_MatchExpectedOutcomes" />
+    </UnitTest>
+    <UnitTest name="EvaluateAsync_UncitedClaim_ReturnsPartialCoverage" storage="d:\aindotnet\coreapplications\rag\sqlservervector-phase4\aindotnet.ragdemo.tests\bin\release\net10.0\aindotnet.ragdemo.tests.dll" id="1d375ea0-bdb7-8185-a86e-f7f9fc77ab16">
+      <TestCategory>
+        <TestCategoryItem TestCategory="ExternalDependency" />
+        <TestCategoryItem TestCategory="LiveEvaluation" />
+        <TestCategoryItem TestCategory="Integration" />
+      </TestCategory>
+      <Execution id="ff4d992c-2314-4d38-abde-a4943e706cdb" />
+      <TestMethod codeBase="D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll" adapterTypeName="executor://mstestadapter/v4" className="AInDotNet.RagDemo.Tests.Integration.ClaimExtractionIntegrationTests" name="EvaluateAsync_UncitedClaim_ReturnsPartialCoverage" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1bbc0448-4908-8511-96e6-6ebb0386c803" executionId="85d3bf3b-ed34-4f72-82de-f493825666ff" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1081011a-7daa-8d91-9464-10c52f759078" executionId="a000ef3e-d589-4dd9-93e3-12ca8d43f632" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ecf8843-b14b-8078-981c-e0dade491b87" executionId="c849743c-08a9-49a9-a168-11635184c25c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b4e6230-c96a-869f-bc2d-54ab0aef4b50" executionId="bd116c4c-65e1-4a1c-a291-9a4ea06ef825" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10f23392-93e3-8f81-9a1a-5c86f9662687" executionId="d720fb31-8f0b-4862-9a70-8c524c021cf4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="11b10bff-0bcc-8dd1-9635-a37799bd3869" executionId="5fe273fd-89bc-4164-9327-c7df60ddc830" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18cdcf2a-5d5b-8fae-a42c-203f0f871f5f" executionId="55b9e16b-dd3a-41bb-baaa-946b4c734519" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="112cd378-fb94-8cec-bcf1-0f5d7d678226" executionId="44514841-c59c-434d-be00-36e191cde33e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="12e5427b-4104-8efa-af38-619b96bd2b50" executionId="5fd70646-37fe-4d29-9173-a469b3338505" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1edb7895-dbc3-81cf-90e7-3a6b15e36337" executionId="0cceeb7c-c198-4366-a069-eaa4e2a71d1a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1af00d3b-fccd-89dc-bc11-7d2495597317" executionId="ea0a5e97-4526-43c5-8063-b31aac6ddaaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="165c50c8-239d-88d8-bef0-cbf80244e2f2" executionId="89b05b11-f383-4780-b362-8bcaca41869d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="196e144b-26c8-8c13-a869-7e29fe0243ad" executionId="2124b7eb-4049-4fc1-91e6-ebf01c86feb3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="11a50682-51b9-8d34-9c70-cba11b301032" executionId="17843793-4985-49e8-8e95-b215f7eb165d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="182480bb-727f-8511-b8f1-20cd7abc7584" executionId="0b53a309-1f41-407a-a7f2-0cac53631d63" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="170efa1b-0686-8bca-a01a-8df2d2d5bb91" executionId="a7ed10dc-483e-484a-b57c-4f4df82264d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ce8dc08-11be-8c09-8374-0dd4cfd61054" executionId="3d4f3dbb-a129-4c74-84f1-7fbb900981dc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d375ea0-bdb7-8185-a86e-f7f9fc77ab16" executionId="ff4d992c-2314-4d38-abde-a4943e706cdb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1264da31-41a7-8f62-a2be-3d92589d8da0" executionId="0de4877f-22dd-4218-a00d-2cbbb788459f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1bdee39f-4eba-8157-b93e-3707c0418c58" executionId="75dbccd9-0b6f-4209-b556-f81f6d6a60ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1a934891-a6ae-8da3-a889-d82512ecb1d6" executionId="b19b84c8-5bae-4ef0-88d3-b186283bfe82" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1497c825-0561-8966-ab13-386da671efea" executionId="0ac10439-681b-4af0-8cf9-a7f83c178b18" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e3d0fd1-ac4d-8f64-9a6e-30deca51a1ef" executionId="67e28c1f-87ad-4aef-bee7-c1f37384d276" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d7025d2-5d2d-81ea-b182-4a4b9ecd0613" executionId="2d973d01-510c-4de5-afdf-f9c4dc7d5de7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13f5a723-2f66-83a2-94e0-86304ff5b568" executionId="39fbbbe7-62d7-4ade-b4f3-032ef53179ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="133729ee-4674-8e67-8437-6bf870cb01ec" executionId="142239ce-8518-46a1-8c1f-e15bddd7d812" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1af29d54-0319-8762-ad27-bcb2224a6160" executionId="d5d3ef88-5bae-4950-9e0e-55fdc4dfe144" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e609574-aa4c-81b3-951f-edde856383fa" executionId="f9ce603e-41d6-46e1-90c2-373f847f5386" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ebde153-feca-8cb0-aa8c-0b2a0d2758a3" executionId="341b03b8-a5f4-4651-86fd-168095b8c036" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b13bb6b-a172-81d5-b6f5-e3f63bf1ed44" executionId="c9e00c93-3b24-49fe-8e5e-a6000e33213d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1abc8354-8598-8c54-85e2-1bfe380ea016" executionId="c1893656-69e8-41a3-ac19-4c798f995035" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e60f4cd-876d-8f1b-8392-0db2cf4177de" executionId="0e305e01-7801-43e1-abb3-08d33f0af676" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="11afe399-5ccc-8474-9716-612bf1cbcd3a" executionId="6615ddc3-b6f5-4bbb-8f03-b4914a1948e7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10220523-1274-8ab5-ba32-3626dbadfdd5" executionId="62764651-be98-45fc-b3a4-059259ed84de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ca78966-624e-8e8e-a410-156910be3089" executionId="dd4700b1-205d-45f7-88fc-0462699e736f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14136ad2-e980-85d5-93eb-d77c1b5e1f2f" executionId="af2a9b51-f870-4cc2-b781-b2437efc0ef1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1aa97037-6df3-8e20-98e0-e6df9f394688" executionId="769ad4d2-efb6-44c3-8f72-a180749cfb8c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17ebd2e7-a80d-8d39-a883-e80d776717b2" executionId="2549f565-3bea-4e14-8aeb-8c5722864d0d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d8d64c1-19e5-8419-acf7-da7b01a586bf" executionId="4dae623f-b734-4c42-b567-42bd3692376e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="140f7c80-d4ff-827b-b643-0fb6f53d02a3" executionId="ef100d85-f0df-4dde-b9bd-20a0c21e2f5c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13adf83b-f355-8e0e-9eb9-2452e164c219" executionId="be1118ec-aea4-4324-80a6-836338072dea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="16274ed9-4c9a-8dfc-a0a7-69c7020c78cf" executionId="55b9c107-6213-4f87-b29f-56ec14e64561" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1184c7d0-964d-895a-8b9a-452779b1cda6" executionId="9f1452ca-128a-4770-8736-40b81d99772e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17b44b8a-754a-8900-a9ce-e407fd80c766" executionId="45044a30-8d97-4607-a222-55ecea883784" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1c1416fc-090b-842a-ba95-ccd6587f884e" executionId="07f0307d-4744-40b9-b469-57467538e21a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17d4555b-3f61-886b-b7c0-18b53c5b808c" executionId="34be06a3-d340-477c-ae2f-1d46f4c04891" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14c6d607-d6f0-885b-81c8-971c22429e87" executionId="31641af7-2d43-4935-9dce-f2f54c8b0f8d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1747f000-c7d0-807a-a591-c577b1e1b776" executionId="1b178a42-d3ab-4766-9085-c5ccada53e48" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1a61d4e3-4692-8982-bfc5-e023ab583a17" executionId="aa886397-d85d-476d-893f-c71eeb9d82a4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f786b2e-64af-8d2b-bd42-5c3440d911e6" executionId="499ffd9e-498d-4656-abdb-60f7b8d1a0f8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="12c87fc4-247a-838e-adfe-a7d7aa921fdb" executionId="b4c021d5-e9fa-49c2-87ee-f2e934c1e665" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1452ee9c-adc7-830f-ade1-b690d9729cd0" executionId="fecc1f0e-81f5-4734-ba82-a384668d0b93" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="52" executed="52" passed="52" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>Test Parallelization enabled for D:\AInDotNet\CoreApplications\RAG\SqlServerVector-Phase4\AInDotNet.RagDemo.Tests\bin\Release\net10.0\AInDotNet.RagDemo.Tests.dll (Workers: 24, Scope: MethodLevel)&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
